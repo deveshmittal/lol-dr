@@ -56,6 +56,10 @@ public class Repository {
         return api.getDefaultSubscriptions();
     }
 
+    public Observable<Data.Subscriptions> userSubscriptions() {
+        return api.getUserSubscriptions();
+    }
+
     interface Api {
         @GET("/api/v1/me")
         Observable<Data.Feed> getMe();

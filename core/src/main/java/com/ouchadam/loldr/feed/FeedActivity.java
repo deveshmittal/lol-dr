@@ -60,7 +60,12 @@ public class FeedActivity extends BaseActivity {
         this.drawerPresenter = new DrawerPresenter<>((NavigationView) findViewById(R.id.navigation_view), drawerListener, new SubscriptionProvider());
 
         executor.execute(repository.subreddit(subreddit), presentResult());
-        executor.execute(repository.defaultSubscriptions(), updateDrawer());
+
+        if (UserTokenProvider.PreferenceUserProvider.newInstance(this).provideCurrentUser() == null) {
+            executor.execute(repository.defaultSubscriptions(), updateDrawer());
+        } else {
+            executor.execute(repository.userSubscriptions(), updateDrawer());
+        }
     }
 
     private String getSubreddit() {
