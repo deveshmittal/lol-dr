@@ -16,11 +16,17 @@ public final class Data {
 
         String getSubreddit();
 
-        int getUps();
+        int getScore();
 
         int getCommentCount();
 
         long getCreatedDate();
+
+        String getAuthor();
+
+        boolean isSaved();
+
+        String getThumbnailUrl();
 
     }
 

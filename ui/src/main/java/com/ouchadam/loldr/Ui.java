@@ -12,6 +12,12 @@ public final class Ui {
 
         String getTitle();
 
+        String getScore();
+
+        String getAuthor();
+
+        String getImageUrl();
+
         String getTime();
 
         String getSubreddit();
