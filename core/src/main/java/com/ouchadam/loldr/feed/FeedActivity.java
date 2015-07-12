@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ouchadam.loldr.BaseActivity;
 import com.ouchadam.loldr.BuildConfig;
@@ -27,11 +28,12 @@ public class FeedActivity extends BaseActivity {
     private static final String ACTION = BuildConfig.APPLICATION_ID + ".FEED";
 
     private static final String EXTRA_SUBREDDIT = "subreddit";
-    private static final String DEFAULT_SUBREDDIT = "askreddit";
+    private static final String DEFAULT_SUBREDDIT = "news";
 
     private final Executor executor;
 
     private Presenter<PostProvider.PostSummarySource> presenter;
+    private Toast toast;
 
     private String afterId;
     private List<Data.Post> cachedPosts = new ArrayList<>();
@@ -74,8 +76,26 @@ public class FeedActivity extends BaseActivity {
 
     private final Presenter.Listener listener = new Presenter.Listener() {
         @Override
-        public void onPostClicked(Ui.PostSummary postSummary) {
+        public void onClick(Ui.PostSummary postSummary) {
             startActivity(PostActivity.create(postSummary.getSubreddit(), postSummary.getId()));
+        }
+
+        @Override
+        public void onClickSave(Ui.PostSummary postSummary) {
+            toast("TODO: save " + postSummary.getTitle());
+        }
+
+        private void toast(String message) {
+            if (toast != null) {
+                toast.cancel();
+            }
+            toast = Toast.makeText(FeedActivity.this, message, Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
+        @Override
+        public void onClickLinkFrom(Ui.PostSummary postSummary) {
+            toast("TODO: open link from " + postSummary.getTitle());
         }
 
         @Override

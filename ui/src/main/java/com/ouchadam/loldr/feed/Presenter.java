@@ -46,7 +46,11 @@ final class Presenter<T extends DataSource<Ui.PostSummary>> {
     }
 
     public interface Listener extends PagingListener {
-        void onPostClicked(Ui.PostSummary postSummary);
+        void onClick(Ui.PostSummary postSummary);
+
+        void onClickSave(Ui.PostSummary postSummary);
+
+        void onClickLinkFrom(Ui.PostSummary postSummary);
     }
 
     interface PagingListener {

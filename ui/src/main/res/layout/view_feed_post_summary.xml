@@ -10,7 +10,7 @@
     android:layout_height="wrap_content" />
 
   <TextView
-    android:id="@+id/feed_post_summary_timestamp"
+    android:id="@+id/feed_post_summary_text_time"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
 
@@ -23,5 +23,28 @@
     android:id="@+id/feed_post_summary_text_subreddit"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
+
+  <TextView
+    android:id="@+id/feed_post_summary_text_author"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+
+  <TextView
+    android:id="@+id/feed_post_summary_text_score"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+
+  <ImageView
+    android:id="@+id/feed_post_summary_image_thumbnail"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:contentDescription="@null" />
+
+  <ImageView
+    android:id="@+id/feed_post_summary_image_save"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:src="@drawable/ic_save"
+    android:contentDescription="Save post" />
 
 </LinearLayout>

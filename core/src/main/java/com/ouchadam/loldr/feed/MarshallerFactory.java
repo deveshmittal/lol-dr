@@ -24,7 +24,7 @@ class MarshallerFactory {
     }
 
     public Marshaller<List<Ui.PostSummary>, List<Data.Post>> posts() {
-       return marshallList(post());
+        return marshallList(post());
     }
 
     private <T, F> Marshaller<List<T>, List<F>> marshallList(final Marshaller<T, F> marshaller) {
@@ -43,32 +43,47 @@ class MarshallerFactory {
     private Marshaller<Ui.PostSummary, Data.Post> post() {
         return new Marshaller<Ui.PostSummary, Data.Post>() {
             @Override
-            public Ui.PostSummary marshall(final Data.Post from) {
+            public Ui.PostSummary marshall(final Data.Post post) {
                 return new Ui.PostSummary() {
                     @Override
                     public String getId() {
-                        return from.getId();
+                        return post.getId();
                     }
 
                     @Override
                     public String getTitle() {
-                        return from.getTitle();
+                        return post.getTitle();
+                    }
+
+                    @Override
+                    public String getScore() {
+                        return String.valueOf(post.getScore());
+                    }
+
+                    @Override
+                    public String getAuthor() {
+                        return post.getAuthor();
+                    }
+
+                    @Override
+                    public String getImageUrl() {
+                        return post.getThumbnailUrl();
                     }
 
                     @Override
                     public String getTime() {
-                        SimpleDate date = SimpleDate.from(from.getCreatedDate());
+                        SimpleDate date = SimpleDate.from(post.getCreatedDate());
                         return postSummarySimpleDateFormatter.format(date);
                     }
 
                     @Override
                     public String getSubreddit() {
-                        return from.getSubreddit();
+                        return post.getSubreddit();
                     }
 
                     @Override
                     public String getCommentCount() {
-                        return String.valueOf(from.getCommentCount());
+                        return String.valueOf(post.getCommentCount());
                     }
                 };
             }
