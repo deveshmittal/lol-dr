@@ -1,5 +1,6 @@
 package com.ouchadam.loldr.feed;
 
+import android.database.AbstractCursor;
 import android.database.Cursor;
 
 import com.ouchadam.loldr.DataSource;
@@ -33,10 +34,54 @@ public class PostProvider implements Presenter.PostSourceProvider {
 
     public static class PostSummarySource implements DataSource<Ui.PostSummary> {
 
-        private Cursor cursor;
+        private Cursor cursor = new AbstractCursor() {
+            @Override
+            public int getCount() {
+                return 0;
+            }
+
+            @Override
+            public String[] getColumnNames() {
+                return new String[0];
+            }
+
+            @Override
+            public String getString(int i) {
+                return null;
+            }
+
+            @Override
+            public short getShort(int i) {
+                return 0;
+            }
+
+            @Override
+            public int getInt(int i) {
+                return 0;
+            }
+
+            @Override
+            public long getLong(int i) {
+                return 0;
+            }
+
+            @Override
+            public float getFloat(int i) {
+                return 0;
+            }
+
+            @Override
+            public double getDouble(int i) {
+                return 0;
+            }
+
+            @Override
+            public boolean isNull(int i) {
+                return false;
+            }
+        };
 
         public PostSummarySource() {
-            this(null);
         }
 
         public PostSummarySource(Cursor cursor) {

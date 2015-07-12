@@ -40,6 +40,12 @@
       </intent-filter>
     </activity-alias>
 
+    <provider
+      android:name="com.ouchadam.loldr.db.ContentProvider"
+      android:authorities="com.ouchadam"
+      android:exported="false"
+      android:syncable="true" />
+
   </application>
 
 </manifest>

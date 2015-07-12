@@ -27,18 +27,18 @@ public class CacheRepository {
 
     public Observable<DataSource<Ui.PostSummary>> subreddit(String subreddit) {
         return Observable.just(subreddit)
-                .map(queryForSubreddit());
+                .map(queryForSubreddit())
+                .onErrorResumeNext(Observable.<DataSource<Ui.PostSummary>>empty());
     }
 
     private Func1<String, DataSource<Ui.PostSummary>> queryForSubreddit() {
         return new Func1<String, DataSource<Ui.PostSummary>>() {
             @Override
             public PostProvider.PostSummarySource call(String subreddit) {
-                Cursor result = contentResolver.query(null, null, null, null, null);
+                Cursor result = contentResolver.query(ContentProvider.POSTS, null, null, null, null);
                 if (result.moveToFirst()) {
-                    return new PostProvider.PostSummarySource();
+                    return new PostProvider.PostSummarySource(result);
                 }
-
                 throw new RuntimeException("empty db");
             }
         };
@@ -64,7 +64,7 @@ public class CacheRepository {
                     bulkValues[index] = values;
                 }
 
-                contentResolver.bulkInsert(null, bulkValues);
+                contentResolver.bulkInsert(ContentProvider.POSTS, bulkValues);
                 return queryForSubreddit().call(subreddit);
             }
         };

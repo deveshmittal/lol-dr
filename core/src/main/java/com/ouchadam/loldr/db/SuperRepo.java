@@ -36,7 +36,7 @@ public class SuperRepo {
         return Observable.concat(
                 cache.subreddit(subreddit),
                 api.subreddit(subreddit).map(cache.saveSubreddit(subreddit))
-        ).first();
+        );
     }
 
     public Observable<DataSource<Ui.PostSummary>> subreddit(String subreddit, String afterId) {
@@ -50,4 +50,5 @@ public class SuperRepo {
     public Observable<Data.Subscriptions> userSubscriptions() {
         return api.userSubscriptions();
     }
+
 }
