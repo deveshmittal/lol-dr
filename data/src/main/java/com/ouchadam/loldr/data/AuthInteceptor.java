@@ -8,6 +8,7 @@ import java.io.IOException;
 class AuthInteceptor implements Interceptor {
 
     private static final int MAX_RETRIES=3;
+    private static final int UNAUTHORISED_RESPONSE_CODE = 401;
 
     private final TokenProvider tokenProvider;
 
@@ -26,7 +27,7 @@ class AuthInteceptor implements Interceptor {
                         .build()
         );
 
-        if (response.code() == 401 && allowedToRetry()) {
+        if (response.code() == UNAUTHORISED_RESPONSE_CODE && allowedToRetry()) {
             tokenProvider.invalidateToken();
             retries++;
             return intercept(chain);
