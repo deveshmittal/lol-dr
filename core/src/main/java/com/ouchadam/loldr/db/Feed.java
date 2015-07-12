@@ -6,9 +6,9 @@ import com.ouchadam.loldr.Ui;
 public class Feed {
 
     private final DataSource<Ui.PostSummary> dataSource;
-    private final String afterId;
+    private final AfterId afterId;
 
-    public Feed(DataSource<Ui.PostSummary> dataSource, String afterId) {
+    public Feed(DataSource<Ui.PostSummary> dataSource, AfterId afterId) {
         this.dataSource = dataSource;
         this.afterId = afterId;
     }
@@ -17,7 +17,7 @@ public class Feed {
         return dataSource;
     }
 
-    public String getAfterId() {
+    public AfterId getAfterId() {
         return afterId;
     }
 }

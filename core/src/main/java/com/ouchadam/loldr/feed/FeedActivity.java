@@ -13,6 +13,7 @@ import com.ouchadam.loldr.R;
 import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.UserTokenProvider;
 import com.ouchadam.loldr.data.Data;
+import com.ouchadam.loldr.db.AfterId;
 import com.ouchadam.loldr.db.Feed;
 import com.ouchadam.loldr.db.SuperRepo;
 import com.ouchadam.loldr.drawer.DrawerPresenter;
@@ -36,7 +37,7 @@ public class FeedActivity extends BaseActivity {
     private Presenter presenter;
     private Toast toast;
 
-    private String afterId;
+    private AfterId afterId;
     private SuperRepo repository;
 
     private String subreddit;

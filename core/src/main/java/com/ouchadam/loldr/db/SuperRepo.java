@@ -37,8 +37,8 @@ public class SuperRepo {
         );
     }
 
-    public Observable<Feed> subreddit(String subreddit, String afterId) {
-        return api.subreddit(subreddit, afterId).map(cache.saveSubreddit(subreddit));
+    public Observable<Feed> subreddit(String subreddit, AfterId afterId) {
+        return api.subreddit(subreddit, afterId.getValue()).map(cache.saveSubreddit(subreddit));
     }
 
     public Observable<Data.Subscriptions> defaultSubscriptions() {

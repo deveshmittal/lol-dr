@@ -108,6 +108,21 @@ public class PostProvider implements Presenter.PostSourceProvider {
                 }
 
                 @Override
+                public String getScore() {
+                    return String.valueOf(DB.PostSummary.getScore(cursor));
+                }
+
+                @Override
+                public String getAuthor() {
+                    return DB.PostSummary.getAuthor(cursor);
+                }
+
+                @Override
+                public String getImageUrl() {
+                    return DB.PostSummary.getImageUrl(cursor);
+                }
+
+                @Override
                 public String getTime() {
                     return DB.PostSummary.getHoursAgoLabel(cursor);
                 }

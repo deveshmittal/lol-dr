@@ -25,11 +25,11 @@ public class CacheRepository {
 
     public Observable<Feed> subreddit(String subreddit) {
         return Observable.just(subreddit)
-                .map(queryForSubreddit(""))
+                .map(queryForSubreddit(AfterId.MISSING))
                 .onErrorResumeNext(Observable.<Feed>empty());
     }
 
-    private Func1<String, Feed> queryForSubreddit(final String afterId) {
+    private Func1<String, Feed> queryForSubreddit(final AfterId afterId) {
         return new Func1<String, Feed>() {
             @Override
             public Feed call(String subreddit) {
@@ -57,7 +57,7 @@ public class CacheRepository {
 
                 contentResolver.bulkInsert(ContentProvider.POSTS, postValues);
 
-                return queryForSubreddit(feed.afterId()).call(subreddit);
+                return queryForSubreddit(new AfterId(feed.afterId())).call(subreddit);
             }
         };
     }
@@ -76,6 +76,9 @@ public class CacheRepository {
             DB.PostSummary.setSubredditLabel(post.getSubreddit(), values);
             DB.PostSummary.setHoursAgoLabel(postSummarySimpleDateFormatter.format(SimpleDate.from(post.getCreatedDate())), values);
             DB.PostSummary.setAfterId(feed.afterId(), values);
+            DB.PostSummary.setAuthor(post.getAuthor(), values);
+            DB.PostSummary.setImageUrl(post.getThumbnailUrl(), values);
+            DB.PostSummary.setScore(post.getScore(), values);
 
             postValues[index] = values;
         }
