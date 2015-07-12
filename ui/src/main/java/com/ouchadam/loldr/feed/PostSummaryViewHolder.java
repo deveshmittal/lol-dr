@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ouchadam.loldr.Ui;
@@ -16,27 +17,40 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
     private final TextView timeView;
     private final TextView commentsView;
     private final TextView subredditView;
+    private final TextView authorView;
+    private final TextView scoreView;
+    private final ImageView thumbnailView;
+    private final View saveView;
     private final Presenter.Listener postClickListener;
 
     static PostSummaryViewHolder inflate(ViewGroup parent, LayoutInflater layoutInflater, Presenter.Listener postClickListener) {
         View view = layoutInflater.inflate(R.layout.view_feed_post_summary, parent, false);
 
         TextView titleView = (TextView) view.findViewById(R.id.feed_post_summary_text_title);
-        TextView timeView = (TextView) view.findViewById(R.id.feed_post_summary_timestamp);
+        TextView timeView = (TextView) view.findViewById(R.id.feed_post_summary_text_time);
         TextView commentsView = (TextView) view.findViewById(R.id.feed_post_summary_text_comments);
         TextView subredditView = (TextView) view.findViewById(R.id.feed_post_summary_text_subreddit);
+        TextView authorView = (TextView) view.findViewById(R.id.feed_post_summary_text_author);
+        TextView scoreView = (TextView) view.findViewById(R.id.feed_post_summary_text_score);
+        ImageView thumbnailView = (ImageView) view.findViewById(R.id.feed_post_summary_image_thumbnail);
+        View saveView = view.findViewById(R.id.feed_post_summary_image_save);
 
-        return new PostSummaryViewHolder(view, titleView, timeView, commentsView, subredditView, postClickListener);
+        return new PostSummaryViewHolder(view, titleView, timeView, commentsView, subredditView,
+                authorView, scoreView, thumbnailView, saveView, postClickListener);
     }
 
     private PostSummaryViewHolder(View itemView, TextView titleView, TextView timeView, TextView commentsView,
-                                  TextView subredditView, Presenter.Listener postClickListener) {
+                                  TextView subredditView, TextView authorView, TextView scoreView, ImageView thumbnailView, View saveView, Presenter.Listener postClickListener) {
         super(itemView);
         this.rootView = itemView;
         this.titleView = titleView;
         this.timeView = timeView;
         this.commentsView = commentsView;
         this.subredditView = subredditView;
+        this.authorView = authorView;
+        this.scoreView = scoreView;
+        this.thumbnailView = thumbnailView;
+        this.saveView = saveView;
         this.postClickListener = postClickListener;
     }
 
@@ -46,6 +60,19 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
         setTime(postSummary.getTime());
         setCommentsCount(postSummary.getCommentCount());
         setSubreddit(postSummary.getSubreddit());
+        authorView.setText(postSummary.getAuthor());
+        scoreView.setText(postSummary.getScore());
+        setThumbnail(postSummary.getImageUrl());
+    }
+
+    private void setThumbnail(String imageUrl) {
+        if (imageUrl.equals("self")) {
+            // self post (no image)
+        } else if (imageUrl.equals("default")) {
+            // no image
+        } else {
+            // TODO: load image
+        }
     }
 
     private void setClickListener(final Ui.PostSummary postSummary) {
@@ -53,6 +80,12 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 postClickListener.onPostClicked(postSummary);
+            }
+        });
+        saveView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postClickListener.onSavePostClicked(postSummary);
             }
         });
     }

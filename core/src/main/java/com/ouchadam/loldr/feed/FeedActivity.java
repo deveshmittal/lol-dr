@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ouchadam.loldr.BaseActivity;
 import com.ouchadam.loldr.BuildConfig;
@@ -32,6 +33,7 @@ public class FeedActivity extends BaseActivity {
     private final Executor executor;
 
     private Presenter<PostProvider.PostSummarySource> presenter;
+    private Toast toast;
 
     private String afterId;
     private List<Data.Post> cachedPosts = new ArrayList<>();
@@ -76,6 +78,15 @@ public class FeedActivity extends BaseActivity {
         @Override
         public void onPostClicked(Ui.PostSummary postSummary) {
             startActivity(PostActivity.create(postSummary.getSubreddit(), postSummary.getId()));
+        }
+
+        @Override
+        public void onSavePostClicked(Ui.PostSummary postSummary) {
+            if (toast != null) {
+                toast.cancel();
+            }
+            toast = Toast.makeText(FeedActivity.this, "TODO: save " + postSummary.getTitle(), Toast.LENGTH_SHORT);
+            toast.show();
         }
 
         @Override
