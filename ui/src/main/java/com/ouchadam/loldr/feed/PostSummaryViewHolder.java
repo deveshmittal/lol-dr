@@ -11,15 +11,14 @@ import com.ouchadam.loldr.ui.R;
 
 final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
 
-    public static final int POSITION_KEY = R.id.tag_feed_position;
-
     private final View rootView;
     private final TextView titleView;
     private final TextView timeView;
     private final TextView commentsView;
     private final TextView subredditView;
+    private final Presenter.Listener postClickListener;
 
-    static PostSummaryViewHolder inflate(ViewGroup parent, LayoutInflater layoutInflater, View.OnClickListener postClickListener) {
+    static PostSummaryViewHolder inflate(ViewGroup parent, LayoutInflater layoutInflater, Presenter.Listener postClickListener) {
         View view = layoutInflater.inflate(R.layout.view_feed_post_summary, parent, false);
 
         TextView titleView = (TextView) view.findViewById(R.id.feed_post_summary_text_title);
@@ -27,46 +26,52 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
         TextView commentsView = (TextView) view.findViewById(R.id.feed_post_summary_text_comments);
         TextView subredditView = (TextView) view.findViewById(R.id.feed_post_summary_text_subreddit);
 
-        view.setOnClickListener(postClickListener);
-
-        return new PostSummaryViewHolder(view, titleView, timeView, commentsView, subredditView);
+        return new PostSummaryViewHolder(view, titleView, timeView, commentsView, subredditView, postClickListener);
     }
 
     private PostSummaryViewHolder(View itemView, TextView titleView, TextView timeView, TextView commentsView,
-                                  TextView subredditView) {
+                                  TextView subredditView, Presenter.Listener postClickListener) {
         super(itemView);
         this.rootView = itemView;
         this.titleView = titleView;
         this.timeView = timeView;
         this.commentsView = commentsView;
         this.subredditView = subredditView;
+        this.postClickListener = postClickListener;
     }
 
-    public void setTitle(String title) {
+    public void bind(final Ui.PostSummary postSummary) {
+        setClickListener(postSummary);
+        setTitle(postSummary.getTitle());
+        setTime(postSummary.getTime());
+        setCommentsCount(postSummary.getCommentCount());
+        setSubreddit(postSummary.getSubreddit());
+    }
+
+    private void setClickListener(final Ui.PostSummary postSummary) {
+        rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postClickListener.onPostClicked(postSummary);
+            }
+        });
+    }
+
+    private void setTitle(String title) {
         titleView.setText(title);
         rootView.setContentDescription(title);
     }
 
-    public void setTime(String time) {
+    private void setTime(String time) {
         timeView.setText(time);
     }
 
-    public void setCommentsCount(String count) {
+    private void setCommentsCount(String count) {
         commentsView.setText(count);
     }
 
-    public void setSubreddit(String subredditName) {
+    private void setSubreddit(String subredditName) {
         subredditView.setText(subredditName);
-    }
-
-    public void setPosition(int position) {
-        rootView.setTag(POSITION_KEY, position);
-    }
-
-    public interface PostInteractionsListener {
-
-        void onClick(Ui.PostSummary postSummary);
-
     }
 
 }
