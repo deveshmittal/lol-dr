@@ -36,7 +36,6 @@ android {
 
 }
 
-
 sqliteAccess {
     migrationsDir 'src/main/assets/migrations'
     packageName 'com.ouchadam.loldr.sql'

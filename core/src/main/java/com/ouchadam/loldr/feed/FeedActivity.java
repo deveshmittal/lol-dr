@@ -13,6 +13,7 @@ import com.ouchadam.loldr.R;
 import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.data.Data;
 import com.ouchadam.loldr.data.Repository;
+import com.ouchadam.loldr.db.SuperRepo;
 import com.ouchadam.loldr.drawer.DrawerPresenter;
 import com.ouchadam.loldr.drawer.SubscriptionProvider;
 import com.ouchadam.loldr.post.PostActivity;
@@ -35,7 +36,7 @@ public class FeedActivity extends BaseActivity {
 
     private String afterId;
     private List<Data.Post> cachedPosts = new ArrayList<>();
-    private Repository repository;
+    private SuperRepo repository;
 
     private String subreddit;
     private DrawerPresenter<SubscriptionProvider.SubscriptionSource> drawerPresenter;
@@ -54,7 +55,7 @@ public class FeedActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.subreddit = getSubreddit();
-        this.repository = Repository.newInstance(UserTokenProvider.newInstance(this));
+        this.repository = SuperRepo.newInstance(UserTokenProvider.newInstance(this));
         PostProvider postProvider = new PostProvider();
         this.presenter = Presenter.onCreate(this, postProvider, subreddit, listener);
         this.drawerPresenter = new DrawerPresenter<>((NavigationView) findViewById(R.id.navigation_view), drawerListener, new SubscriptionProvider());
