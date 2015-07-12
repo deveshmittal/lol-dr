@@ -9,7 +9,6 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -102,8 +101,7 @@ public class TokenAcquirer {
             @Override
             public UserToken call(TokenResponse tokenResponse) {
                 String accountName = new UserFetcher().fetchUserName(tokenResponse);
-                long expiryTime = TimeUnit.SECONDS.toMillis(tokenResponse.getExpiry()) + System.currentTimeMillis() - TimeUnit.SECONDS.toMillis(30);
-                return new UserToken(accountName, tokenResponse.getRawToken(), tokenResponse.getRefreshToken(), expiryTime);
+                return new UserToken(accountName, tokenResponse.getRawToken(), tokenResponse.getRefreshToken(), tokenResponse.getExpiryTime());
             }
         };
     }
@@ -119,4 +117,7 @@ public class TokenAcquirer {
         };
     }
 
+    public void invalidateToken(String accountName) {
+        accountManager.invalidateAuthToken(accountType, accountManager.peekAuthToken(accountForName().call(accountName), ""));
+    }
 }

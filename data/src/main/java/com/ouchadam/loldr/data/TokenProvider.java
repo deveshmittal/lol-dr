@@ -3,6 +3,8 @@ package com.ouchadam.loldr.data;
 public interface TokenProvider {
     AccessToken provideAccessToken();
 
+    void invalidateToken();
+
     class AccessToken {
 
         private final String data;

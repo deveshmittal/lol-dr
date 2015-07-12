@@ -22,9 +22,14 @@ public class UserTokenProvider implements TokenProvider {
     }
 
     @Override
-    public AccessToken provideAccessToken() {
+    public synchronized AccessToken provideAccessToken() {
         Token token = tokenAcquirer.acquireToken(currentUserProvider.provideCurrentUser()).toBlocking().first();
         return new TokenProvider.AccessToken(token.getAccessToken());
+    }
+
+    @Override
+    public void invalidateToken() {
+        tokenAcquirer.invalidateToken(currentUserProvider.provideCurrentUser());
     }
 
     interface CurrentUserProvider {

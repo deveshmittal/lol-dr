@@ -18,6 +18,8 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import java.util.concurrent.TimeUnit;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,26 +63,27 @@ public class Authenticator extends AbstractAccountAuthenticator {
     }
 
     @Override
-    public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options)
-            throws NetworkErrorException {
+    public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
         String refreshToken = accountManager.getPassword(account);
         String token = accountManager.peekAuthToken(account, authTokenType);
 
-        if (tokenIsInvalid(token)) {
+        if (refreshTokenIsInvalid(refreshToken)) {
+
             return promptToLogin(response, options);
         }
 
-        if (tokenHasExpired(account)) {
+        if (token == null || tokenHasExpired(account)) {
             try {
                 return refreshAccount(account, refreshToken);
             } catch (Exception e) {
                 throw new RuntimeException("we failed to refresh our token");
             }
         }
-        return reuseExistingToken(account, refreshToken);
+
+        return reuseExistingToken(account, token);
     }
 
-    private boolean tokenIsInvalid(String token) {
+    private boolean refreshTokenIsInvalid(String token) {
         return TextUtils.isEmpty(token);
     }
 
@@ -90,17 +93,16 @@ public class Authenticator extends AbstractAccountAuthenticator {
     }
 
     private Bundle refreshAccount(Account account, String refreshToken) throws Exception {
-        TokenResponse refreshedToken = refreshAccount(refreshToken).toBlocking().first();
-        accountManager.setPassword(account, refreshedToken.getRawToken());
-        accountManager.setAuthToken(account, account.type, account.type);
+        RefreshTokenResponse refreshedToken = refreshAccount(refreshToken).toBlocking().first();
+        accountManager.setAuthToken(account, account.type, refreshedToken.getRawToken());
 
-        return createFromAccount(account);
+        return createFromAccount(account, refreshedToken);
     }
 
-    public Observable<TokenResponse> refreshAccount(String refreshToken) {
-        return Observable.just(refreshToken).map(new Func1<String, TokenResponse>() {
+    public Observable<RefreshTokenResponse> refreshAccount(String refreshToken) {
+        return Observable.just(refreshToken).map(new Func1<String, RefreshTokenResponse>() {
             @Override
-            public TokenResponse call(String refreshToken) {
+            public RefreshTokenResponse call(String refreshToken) {
                 try {
                     MediaType textMediaType = MediaType.parse("application/x-www-form-urlencoded");
                     Request request = new Request.Builder()
@@ -115,7 +117,7 @@ public class Authenticator extends AbstractAccountAuthenticator {
 
                     Log.e("!!!", result);
 
-                    return parseUserToken(result);
+                    return parseRefreshToken(result);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -123,17 +125,19 @@ public class Authenticator extends AbstractAccountAuthenticator {
         });
     }
 
-    private TokenResponse parseUserToken(String result) {
+    private RefreshTokenResponse parseRefreshToken(String result) {
         try {
             JSONObject jsonObject = new JSONObject(result);
             String rawToken = jsonObject.getString("access_token");
-            String refreshToken = jsonObject.getString("refresh_token");
-
             int expiryInSeconds = jsonObject.getInt("expires_in");
-            return new TokenResponse(rawToken, refreshToken, expiryInSeconds, System.currentTimeMillis());
+            return new RefreshTokenResponse(rawToken, expirySecondsToTimeStamp(expiryInSeconds));
         } catch (JSONException e) {
             throw new RuntimeException("failed to get token", e);
         }
+    }
+
+    private long expirySecondsToTimeStamp(int expiryInSeconds) {
+        return TimeUnit.SECONDS.toMillis(expiryInSeconds) + System.currentTimeMillis();
     }
 
     private Bundle reuseExistingToken(Account account, String token) {
@@ -144,20 +148,20 @@ public class Authenticator extends AbstractAccountAuthenticator {
         return bundle;
     }
 
-    private Bundle createFromAccount(Account account) {
+    private Bundle createFromAccount(Account account, RefreshTokenResponse token) {
         Bundle bundle = new Bundle();
         bundle.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
         bundle.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
-        bundle.putString(AccountManager.KEY_AUTHTOKEN, accountManager.getPassword(account));
+        bundle.putString(AccountManager.KEY_AUTHTOKEN, token.getRawToken());
 
-        Bundle extra = createUserFromAccount(account);
+        Bundle extra = createUserFromToken(token);
         bundle.putBundle(AccountManager.KEY_USERDATA, extra);
         return bundle;
     }
 
-    private Bundle createUserFromAccount(Account account) {
+    private Bundle createUserFromToken(RefreshTokenResponse token) {
         Bundle userData = new Bundle();
-        userData.putLong(KEY_TOKEN_EXPIRY, Long.parseLong(accountManager.getUserData(account, KEY_TOKEN_EXPIRY)));
+        userData.putLong(KEY_TOKEN_EXPIRY, token.getExpiryTime());
         return userData;
     }
 

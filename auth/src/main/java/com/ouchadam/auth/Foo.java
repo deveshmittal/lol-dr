@@ -1,8 +1,5 @@
 package com.ouchadam.auth;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 
 import com.squareup.okhttp.Credentials;
@@ -41,26 +38,6 @@ class Foo {
         this.uniqueDeviceId = uniqueDeviceId;
     }
 
-    public void requestUserAuthentication(Activity activity) {
-        String responseType = "code";
-        String requestId = "RANDOM_STRING";
-        String duration = "permanent";
-        String scope = "read,identity,mysubreddits";
-
-        Intent intent = new Intent(activity, OAuthSignInActivity.class);
-        intent.setData(
-                Uri.parse(
-                        BASE_URL
-                                + CLIENT_ID
-                                + "&response_type=" + responseType
-                                + "&state=" + requestId
-                                + "&redirect_uri=" + REDIRECT_URI
-                                + "&duration=" + duration
-                                + "&scope=" + scope));
-
-        activity.startActivityForResult(intent, 100);
-    }
-
     public Observable<AnonToken> requestAnonymousAccessToken() {
         return Observable.create(
                 new Observable.OnSubscribe<AnonToken>() {
@@ -96,35 +73,20 @@ class Foo {
         return parseAnonToken(result);
     }
 
-    private TokenResponse parseUserToken(String result) {
-        try {
-            JSONObject jsonObject = new JSONObject(result);
-            String rawToken = jsonObject.getString("access_token");
-
-            String refreshToken;
-            if (jsonObject.has("refresh_token")) {
-                refreshToken = jsonObject.getString("refresh_token");
-            } else {
-                refreshToken = "none!";
-            }
-
-            int expiryInSeconds = jsonObject.getInt("expires_in");
-            return new TokenResponse(rawToken, refreshToken, expiryInSeconds, System.currentTimeMillis());
-        } catch (JSONException e) {
-            throw new RuntimeException("failed to get token", e);
-        }
-    }
-
     private AnonToken parseAnonToken(String result) {
         try {
             JSONObject jsonObject = new JSONObject(result);
             String rawToken = jsonObject.getString("access_token");
             int expiryInSeconds = jsonObject.getInt("expires_in");
 
-            return new AnonToken(rawToken, TimeUnit.SECONDS.toMillis(expiryInSeconds) + System.currentTimeMillis());
+            return new AnonToken(rawToken, expirySecondsToTimeStamp(expiryInSeconds));
         } catch (JSONException e) {
             throw new RuntimeException("failed to get token", e);
         }
+    }
+
+    private long expirySecondsToTimeStamp(int expiryInSeconds) {
+        return TimeUnit.SECONDS.toMillis(expiryInSeconds) + System.currentTimeMillis();
     }
 
     public Observable<TokenResponse> requestUserToken(String redirectUrl) {
@@ -188,6 +150,18 @@ class Foo {
             return params;
         } catch (UnsupportedEncodingException ex) {
             throw new AssertionError(ex);
+        }
+    }
+
+    private TokenResponse parseUserToken(String result) {
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+            String rawToken = jsonObject.getString("access_token");
+            String refreshToken = jsonObject.getString("refresh_token");
+            int expiryInSeconds = jsonObject.getInt("expires_in");
+            return new TokenResponse(rawToken, refreshToken, expirySecondsToTimeStamp(expiryInSeconds));
+        } catch (JSONException e) {
+            throw new RuntimeException("failed to get token", e);
         }
     }
 
