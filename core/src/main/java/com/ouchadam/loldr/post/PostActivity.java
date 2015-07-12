@@ -9,7 +9,6 @@ import com.ouchadam.loldr.BuildConfig;
 import com.ouchadam.loldr.Executor;
 import com.ouchadam.loldr.UserTokenProvider;
 import com.ouchadam.loldr.data.Data;
-import com.ouchadam.loldr.data.Repository;
 import com.ouchadam.loldr.db.SuperRepo;
 
 import java.util.List;
@@ -45,7 +44,7 @@ public class PostActivity extends BaseActivity {
         String subreddit = getIntent().getStringExtra(EXTRA_SUBREDDIT);
         String postId = getIntent().getStringExtra(EXTA_POST_ID);
 
-        executor.execute(SuperRepo.newInstance(UserTokenProvider.newInstance(this)).comments(subreddit, postId), presentResult());
+        executor.execute(SuperRepo.newInstance(UserTokenProvider.newInstance(this), this).comments(subreddit, postId), presentResult());
     }
 
     private Subscriber<Data.Comments> presentResult() {

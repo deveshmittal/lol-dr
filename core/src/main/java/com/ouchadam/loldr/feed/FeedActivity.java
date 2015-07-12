@@ -8,11 +8,10 @@ import android.util.Log;
 import com.ouchadam.loldr.BaseActivity;
 import com.ouchadam.loldr.BuildConfig;
 import com.ouchadam.loldr.Executor;
-import com.ouchadam.loldr.UserTokenProvider;
 import com.ouchadam.loldr.R;
 import com.ouchadam.loldr.Ui;
+import com.ouchadam.loldr.UserTokenProvider;
 import com.ouchadam.loldr.data.Data;
-import com.ouchadam.loldr.data.Repository;
 import com.ouchadam.loldr.db.SuperRepo;
 import com.ouchadam.loldr.drawer.DrawerPresenter;
 import com.ouchadam.loldr.drawer.SubscriptionProvider;
@@ -55,7 +54,7 @@ public class FeedActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.subreddit = getSubreddit();
-        this.repository = SuperRepo.newInstance(UserTokenProvider.newInstance(this));
+        this.repository = SuperRepo.newInstance(UserTokenProvider.newInstance(this), this);
         PostProvider postProvider = new PostProvider();
         this.presenter = Presenter.onCreate(this, postProvider, subreddit, listener);
         this.drawerPresenter = new DrawerPresenter<>((NavigationView) findViewById(R.id.navigation_view), drawerListener, new SubscriptionProvider());
@@ -85,8 +84,8 @@ public class FeedActivity extends BaseActivity {
         }
     };
 
-    private Subscriber<Data.Feed> presentResult() {
-        return new Subscriber<Data.Feed>() {
+    private Subscriber<PostProvider.PostSummarySource> presentResult() {
+        return new Subscriber<PostProvider.PostSummarySource>() {
             @Override
             public void onCompleted() {
                 // do nothing
@@ -98,13 +97,13 @@ public class FeedActivity extends BaseActivity {
             }
 
             @Override
-            public void onNext(Data.Feed feed) {
-                FeedActivity.this.afterId = feed.afterId();
-                cachedPosts.addAll(feed.getPosts());               // TODO replace this with a cursor
+            public void onNext(PostProvider.PostSummarySource source) {
+//                FeedActivity.this.afterId = feed.afterId();
+//                cachedPosts.addAll(feed.getPosts());               // TODO replace this with a cursor
+//
+//                List<Ui.PostSummary> summaries = MarshallerFactory.newInstance(getResources()).posts().marshall(cachedPosts);
 
-                List<Ui.PostSummary> summaries = MarshallerFactory.newInstance(getResources()).posts().marshall(cachedPosts);
-
-                presenter.present(new PostProvider.PostSummarySource(summaries));
+                presenter.present(source);
             }
         };
     }

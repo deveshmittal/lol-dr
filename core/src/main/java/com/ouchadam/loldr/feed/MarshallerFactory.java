@@ -10,11 +10,11 @@ import com.ouchadam.loldr.post.PostSummarySimpleDateFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-class MarshallerFactory {
+public class MarshallerFactory {
 
     private final PostSummarySimpleDateFormatter postSummarySimpleDateFormatter;
 
-    static MarshallerFactory newInstance(Resources resources) {
+    public static MarshallerFactory newInstance(Resources resources) {
         PostSummarySimpleDateFormatter postSummarySimpleDateFormatter = PostSummarySimpleDateFormatter.newInstance(resources);
         return new MarshallerFactory(postSummarySimpleDateFormatter);
     }

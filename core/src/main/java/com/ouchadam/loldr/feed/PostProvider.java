@@ -25,7 +25,7 @@ public class PostProvider implements Presenter.PostSourceProvider<PostProvider.P
         return postSummarySource.size();
     }
 
-    static class PostSummarySource implements DataSource<Ui.PostSummary> {
+    public static class PostSummarySource implements DataSource<Ui.PostSummary> {
 
         private final List<Ui.PostSummary> postSummaries;
 
