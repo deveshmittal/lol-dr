@@ -1,7 +1,20 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.novoda:sqlite-analyzer:0.3.1'
+        classpath 'com.android.tools.build:gradle:1.2.3'
+    }
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'sqlite-analyzer'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
+
 
 android {
     compileSdkVersion 22
@@ -20,9 +33,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+}
+
+
+sqliteAccess {
+    migrationsDir 'src/main/assets/migrations'
+    packageName 'com.ouchadam.loldr.sql'
+    generator staticAccessGenerator()
 }
 
 dependencies {
+    compile 'com.novoda:sqlite-provider:1.2.0'
+
+
     compile project(':auth')
     compile project(':ui')
     compile project(':data')
