@@ -38,7 +38,6 @@
     android:id="@+id/feed_post_summary_image_thumbnail"
     android:layout_width="48dp"
     android:layout_height="48dp"
-    android:background="@android:color/holo_red_light"
     android:contentDescription="@null" />
 
   <ImageView

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.ui.R;
@@ -56,6 +57,7 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(final Ui.PostSummary postSummary) {
         setClickListener(postSummary);
+        setThumbnailClickListener(postSummary);
         setTitle(postSummary.getTitle());
         setTime(postSummary.getTime());
         setCommentsCount(postSummary.getCommentCount());
@@ -65,27 +67,40 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
         setThumbnail(postSummary.getImageUrl());
     }
 
-    private void setThumbnail(String imageUrl) {
-        if (imageUrl.equals("self")) {
-            // self post (no image)
-        } else if (imageUrl.equals("default")) {
-            // no image
-        } else {
-            // TODO: load image
+    private void setThumbnailClickListener(final Ui.PostSummary postSummary) {
+        thumbnailView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postClickListener.onClickLinkFrom(postSummary);
+            }
+        });
+    }
+
+    private void setThumbnail(final String imageUrl) {
+        if ("self".equals(imageUrl)) {
+            thumbnailView.setVisibility(View.GONE);
+            return;
         }
+
+        if (imageUrl == null || imageUrl.isEmpty() ||  "default".equals(imageUrl)) {
+            thumbnailView.setImageResource(R.drawable.ic_link);
+        } else {
+            thumbnailView.setImageResource(R.drawable.ic_image_placeholder);
+        }
+        thumbnailView.setVisibility(View.VISIBLE);
     }
 
     private void setClickListener(final Ui.PostSummary postSummary) {
         rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                postClickListener.onPostClicked(postSummary);
+                postClickListener.onClick(postSummary);
             }
         });
         saveView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                postClickListener.onSavePostClicked(postSummary);
+                postClickListener.onClickSave(postSummary);
             }
         });
     }
