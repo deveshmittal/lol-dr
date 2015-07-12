@@ -1,8 +1,8 @@
 package com.ouchadam.loldr.db;
 
-import android.content.ContentResolver;
 import android.content.Context;
 
+import com.ouchadam.loldr.DataSource;
 import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.data.Data;
 import com.ouchadam.loldr.data.Repository;
@@ -17,35 +17,39 @@ import rx.functions.Func1;
 
 public class SuperRepo {
 
-    private final Repository repository;
+    private final Repository api;
+    private final CacheRepository cache;
 
-    private final ContentResolver contentResolver;
     private final MarshallerFactory marshallerFactory;
 
     public static SuperRepo newInstance(TokenProvider tokenProvider, Context context) {
-        return new SuperRepo(Repository.newInstance(tokenProvider), context.getContentResolver(), MarshallerFactory.newInstance(context.getResources()));
+        MarshallerFactory marshallerFactory = MarshallerFactory.newInstance(context.getResources());
+        return new SuperRepo(Repository.newInstance(tokenProvider), new CacheRepository(context.getContentResolver()), marshallerFactory);
     }
 
-    public SuperRepo(Repository repository, ContentResolver contentResolver, MarshallerFactory marshallerFactory) {
-        this.repository = repository;
-        this.contentResolver = contentResolver;
+    public SuperRepo(Repository api, CacheRepository cache, MarshallerFactory marshallerFactory) {
+        this.api = api;
+        this.cache = cache;
         this.marshallerFactory = marshallerFactory;
     }
 
     public Observable<Data.Comments> comments(String subreddit, String postId) {
-        return repository.comments(subreddit, postId);
+        return api.comments(subreddit, postId);
     }
 
-    public Observable<PostProvider.PostSummarySource> subreddit(String subreddit) {
-        return repository.subreddit(subreddit).map(toPostSource());
+    public Observable<DataSource<Ui.PostSummary>> subreddit(String subreddit) {
+        return Observable.concat(
+                cache.subreddit(subreddit),
+                api.subreddit(subreddit).map(toPostSource())
+        ).first();
     }
 
-    public Observable<PostProvider.PostSummarySource> subreddit(String subreddit, String afterId) {
-        return repository.subreddit(subreddit, afterId).map(toPostSource());
+    public Observable<DataSource<Ui.PostSummary>> subreddit(String subreddit, String afterId) {
+        return api.subreddit(subreddit, afterId).map(toPostSource());
     }
 
-    private Func1<Data.Feed, PostProvider.PostSummarySource> toPostSource() {
-        return new Func1<Data.Feed, PostProvider.PostSummarySource>() {
+    private Func1<Data.Feed, DataSource<Ui.PostSummary>> toPostSource() {
+        return new Func1<Data.Feed, DataSource<Ui.PostSummary>>() {
             @Override
             public PostProvider.PostSummarySource call(Data.Feed feed) {
                 List<Ui.PostSummary> summaries = marshallerFactory.posts().marshall(feed.getPosts());
@@ -55,10 +59,10 @@ public class SuperRepo {
     }
 
     public Observable<Data.Subscriptions> defaultSubscriptions() {
-        return repository.defaultSubscriptions();
+        return api.defaultSubscriptions();
     }
 
     public Observable<Data.Subscriptions> userSubscriptions() {
-        return repository.userSubscriptions();
+        return api.userSubscriptions();
     }
 }

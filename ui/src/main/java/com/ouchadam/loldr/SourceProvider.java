@@ -1,7 +1,7 @@
 package com.ouchadam.loldr;
 
-public interface SourceProvider<T, Impl extends DataSource<T>> extends DataSource<T> {
+public interface SourceProvider<T> extends DataSource<T> {
 
-    void swap(Impl source);
+    void swap(DataSource<T> source);
 
 }

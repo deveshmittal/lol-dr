@@ -7,13 +7,13 @@ import com.ouchadam.loldr.data.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommentProvider implements Presenter.CommentSourceProvider<CommentProvider.CommentSource> {
+public class CommentProvider implements Presenter.CommentSourceProvider {
 
     private final CommentSource commentSource = new CommentSource();
 
     @Override
-    public void swap(CommentSource source) {
-        commentSource.dataPosts.addAll(source.dataPosts);
+    public void swap(DataSource<Ui.Comment> source) {
+        commentSource.dataPosts.addAll(((CommentSource) source).dataPosts);
     }
 
     @Override

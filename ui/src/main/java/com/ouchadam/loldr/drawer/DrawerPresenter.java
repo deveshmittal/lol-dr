@@ -8,22 +8,22 @@ import com.ouchadam.loldr.DataSource;
 import com.ouchadam.loldr.SourceProvider;
 import com.ouchadam.loldr.Ui;
 
-public class DrawerPresenter<T extends DataSource<Ui.Subscription>> {
+public class DrawerPresenter {
 
     private static final String EXTRA_ID = "id";
     private static final String EXTRA_NAME = "name";
 
     private final NavigationView navigationView;
     private final Listener listener;
-    private final SourceProvider<Ui.Subscription, T> dataSource;
+    private final SourceProvider<Ui.Subscription> dataSource;
 
-    public DrawerPresenter(NavigationView navigationView, Listener listener, SourceProvider<Ui.Subscription, T> dataSource) {
+    public DrawerPresenter(NavigationView navigationView, Listener listener, SourceProvider<Ui.Subscription> dataSource) {
         this.navigationView = navigationView;
         this.listener = listener;
         this.dataSource = dataSource;
     }
 
-    public void present(T source) {
+    public void present(DataSource<Ui.Subscription> source) {
         dataSource.swap(source);
         navigationView.getMenu().clear();
         navigationView.setNavigationItemSelectedListener(onMenuClicked);
@@ -69,7 +69,7 @@ public class DrawerPresenter<T extends DataSource<Ui.Subscription>> {
         void onSubscriptionClicked(Ui.Subscription subscription);
     }
 
-    interface SubscriptionSourceProvider<T extends DataSource<Ui.Subscription>> extends SourceProvider<Ui.Subscription, T> {
+    interface SubscriptionSourceProvider extends SourceProvider<Ui.Subscription> {
     }
 
 }

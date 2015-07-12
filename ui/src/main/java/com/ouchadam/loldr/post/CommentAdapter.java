@@ -10,14 +10,14 @@ import com.ouchadam.loldr.SourceProvider;
 import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.post.Presenter.Listener;
 
-class CommentAdapter<T extends DataSource<Ui.Comment>> extends RecyclerView.Adapter<CommentViewHolder> {
+class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder> {
 
     private final LayoutInflater layoutInflater;
     private final Listener listener;
 
-    private SourceProvider<Ui.Comment, T> dataSource;
+    private SourceProvider<Ui.Comment> dataSource;
 
-    CommentAdapter(SourceProvider<Ui.Comment, T> dataSource, LayoutInflater layoutInflater, Listener listener) {
+    CommentAdapter(SourceProvider<Ui.Comment> dataSource, LayoutInflater layoutInflater, Listener listener) {
         this.dataSource = dataSource;
         this.layoutInflater = layoutInflater;
         this.listener = listener;
@@ -64,7 +64,7 @@ class CommentAdapter<T extends DataSource<Ui.Comment>> extends RecyclerView.Adap
         return dataSource.size();
     }
 
-    public void notifyDataSourceChanged(T dataSource) {
+    public void notifyDataSourceChanged(DataSource<Ui.Comment> dataSource) {
         this.dataSource.swap(dataSource);
         notifyDataSetChanged();
     }

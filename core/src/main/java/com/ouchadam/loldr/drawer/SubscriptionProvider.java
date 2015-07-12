@@ -6,13 +6,13 @@ import com.ouchadam.loldr.Ui;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SubscriptionProvider implements DrawerPresenter.SubscriptionSourceProvider<SubscriptionProvider.SubscriptionSource> {
+public class SubscriptionProvider implements DrawerPresenter.SubscriptionSourceProvider {
 
     private final SubscriptionSource subscriptionSource = new SubscriptionSource();
 
     @Override
-    public void swap(SubscriptionSource source) {
-        subscriptionSource.subscriptions.addAll(source.subscriptions);
+    public void swap(DataSource<Ui.Subscription> source) {
+        subscriptionSource.subscriptions.addAll(((SubscriptionSource) source).subscriptions);
     }
 
     @Override

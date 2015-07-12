@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.ouchadam.loldr.BaseActivity;
 import com.ouchadam.loldr.BuildConfig;
+import com.ouchadam.loldr.DataSource;
 import com.ouchadam.loldr.Executor;
 import com.ouchadam.loldr.R;
 import com.ouchadam.loldr.Ui;
@@ -31,14 +32,14 @@ public class FeedActivity extends BaseActivity {
 
     private final Executor executor;
 
-    private Presenter<PostProvider.PostSummarySource> presenter;
+    private Presenter presenter;
 
     private String afterId;
     private List<Data.Post> cachedPosts = new ArrayList<>();
     private SuperRepo repository;
 
     private String subreddit;
-    private DrawerPresenter<SubscriptionProvider.SubscriptionSource> drawerPresenter;
+    private DrawerPresenter drawerPresenter;
 
     public static Intent create(String subreddit) {
         Intent intent = new Intent(ACTION);
@@ -57,7 +58,7 @@ public class FeedActivity extends BaseActivity {
         this.repository = SuperRepo.newInstance(UserTokenProvider.newInstance(this), this);
         PostProvider postProvider = new PostProvider();
         this.presenter = Presenter.onCreate(this, postProvider, subreddit, listener);
-        this.drawerPresenter = new DrawerPresenter<>((NavigationView) findViewById(R.id.navigation_view), drawerListener, new SubscriptionProvider());
+        this.drawerPresenter = new DrawerPresenter((NavigationView) findViewById(R.id.navigation_view), drawerListener, new SubscriptionProvider());
 
         executor.execute(repository.subreddit(subreddit), presentResult());
 
@@ -84,8 +85,8 @@ public class FeedActivity extends BaseActivity {
         }
     };
 
-    private Subscriber<PostProvider.PostSummarySource> presentResult() {
-        return new Subscriber<PostProvider.PostSummarySource>() {
+    private Subscriber<DataSource<Ui.PostSummary>> presentResult() {
+        return new Subscriber<DataSource<Ui.PostSummary>>() {
             @Override
             public void onCompleted() {
                 // do nothing
@@ -97,7 +98,7 @@ public class FeedActivity extends BaseActivity {
             }
 
             @Override
-            public void onNext(PostProvider.PostSummarySource source) {
+            public void onNext(DataSource<Ui.PostSummary> source) {
 //                FeedActivity.this.afterId = feed.afterId();
 //                cachedPosts.addAll(feed.getPosts());               // TODO replace this with a cursor
 //

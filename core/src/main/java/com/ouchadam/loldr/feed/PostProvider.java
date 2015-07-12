@@ -6,13 +6,13 @@ import com.ouchadam.loldr.Ui;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostProvider implements Presenter.PostSourceProvider<PostProvider.PostSummarySource> {
+public class PostProvider implements Presenter.PostSourceProvider {
 
     private final PostSummarySource postSummarySource = new PostSummarySource();
 
     @Override
-    public void swap(PostSummarySource source) {
-        postSummarySource.postSummaries.addAll(source.postSummaries);
+    public void swap(DataSource<Ui.PostSummary> source) {
+        postSummarySource.postSummaries.addAll(((PostProvider.PostSummarySource) source).postSummaries);
     }
 
     @Override

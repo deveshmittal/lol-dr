@@ -23,7 +23,7 @@ public class PostActivity extends BaseActivity {
 
     private final Executor executor;
 
-    private Presenter<CommentProvider.CommentSource> presenter;
+    private Presenter presenter;
 
     public static Intent create(String subreddit, String postId) {
         Intent intent = new Intent(ACTION);

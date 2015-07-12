@@ -10,13 +10,13 @@ import com.ouchadam.loldr.SourceProvider;
 import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.ui.R;
 
-final class Presenter<T extends DataSource<Ui.PostSummary>> {
+final class Presenter {
 
-    private final PostSummaryAdapter<T> adapter;
+    private final PostSummaryAdapter adapter;
 
-    static <T extends DataSource<Ui.PostSummary>> Presenter<T> onCreate(
+    static Presenter onCreate(
             AppCompatActivity activity,
-            SourceProvider<Ui.PostSummary, T> dataSource,
+            SourceProvider<Ui.PostSummary> dataSource,
             String subreddit,
             Listener listener) {
 
@@ -26,7 +26,7 @@ final class Presenter<T extends DataSource<Ui.PostSummary>> {
 
         activity.getSupportActionBar().setTitle(subreddit);
 
-        PostSummaryAdapter<T> adapter = new PostSummaryAdapter<>(activity.getLayoutInflater(), listener, dataSource);
+        PostSummaryAdapter adapter = new PostSummaryAdapter(activity.getLayoutInflater(), listener, dataSource);
 
         RecyclerView recyclerView = (RecyclerView) activity.findViewById(R.id.feed_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
@@ -34,14 +34,14 @@ final class Presenter<T extends DataSource<Ui.PostSummary>> {
 
         recyclerView.addOnScrollListener(new PagingScrollListener(listener));
 
-        return new Presenter<>(adapter);
+        return new Presenter(adapter);
     }
 
-    private Presenter(PostSummaryAdapter<T> adapter) {
+    private Presenter(PostSummaryAdapter adapter) {
         this.adapter = adapter;
     }
 
-    public void present(T dataSource) {
+    public void present(DataSource<Ui.PostSummary> dataSource) {
         adapter.notifyDataSourceChanged(dataSource);
     }
 
@@ -78,7 +78,7 @@ final class Presenter<T extends DataSource<Ui.PostSummary>> {
 
     }
 
-    interface PostSourceProvider<T extends DataSource<Ui.PostSummary>> extends SourceProvider<Ui.PostSummary, T> {
+    interface PostSourceProvider extends SourceProvider<Ui.PostSummary> {
 
     }
 

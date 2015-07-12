@@ -9,14 +9,14 @@ import com.ouchadam.loldr.DataSource;
 import com.ouchadam.loldr.SourceProvider;
 import com.ouchadam.loldr.Ui;
 
-class PostSummaryAdapter<T extends DataSource<Ui.PostSummary>> extends RecyclerView.Adapter<PostSummaryViewHolder> {
+class PostSummaryAdapter extends RecyclerView.Adapter<PostSummaryViewHolder> {
 
     private final LayoutInflater layoutInflater;
     private final Presenter.Listener listener;
 
-    private final SourceProvider<Ui.PostSummary, T> dataSource;
+    private final SourceProvider<Ui.PostSummary> dataSource;
 
-    PostSummaryAdapter(LayoutInflater layoutInflater, Presenter.Listener listener, SourceProvider<Ui.PostSummary, T> dataSource) {
+    PostSummaryAdapter(LayoutInflater layoutInflater, Presenter.Listener listener, SourceProvider<Ui.PostSummary> dataSource) {
         this.layoutInflater = layoutInflater;
         this.listener = listener;
         this.dataSource = dataSource;
@@ -49,7 +49,7 @@ class PostSummaryAdapter<T extends DataSource<Ui.PostSummary>> extends RecyclerV
         return dataSource.size();
     }
 
-    public void notifyDataSourceChanged(T dataSource) {
+    public void notifyDataSourceChanged(DataSource<Ui.PostSummary> dataSource) {
         int previousSize = getItemCount();
 
         this.dataSource.swap(dataSource);
