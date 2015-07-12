@@ -2,8 +2,6 @@ package com.ouchadam.loldr.db;
 
 import android.content.Context;
 
-import com.ouchadam.loldr.DataSource;
-import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.data.Data;
 import com.ouchadam.loldr.data.Repository;
 import com.ouchadam.loldr.data.TokenProvider;
@@ -32,14 +30,14 @@ public class SuperRepo {
         return api.comments(subreddit, postId);
     }
 
-    public Observable<DataSource<Ui.PostSummary>> subreddit(String subreddit) {
+    public Observable<Feed> subreddit(String subreddit) {
         return Observable.concat(
                 cache.subreddit(subreddit),
                 api.subreddit(subreddit).map(cache.saveSubreddit(subreddit))
         );
     }
 
-    public Observable<DataSource<Ui.PostSummary>> subreddit(String subreddit, String afterId) {
+    public Observable<Feed> subreddit(String subreddit, String afterId) {
         return api.subreddit(subreddit, afterId).map(cache.saveSubreddit(subreddit));
     }
 

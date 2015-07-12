@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS 'post_summary' (
                                 title TEXT NOT NULL,
                                 subreddit_label TEXT NOT NULL,
                                 subreddit_key TEXT NOT NULL,
+                                after_id TEXT NOT NULL,
                                 hours_ago_label TEXT NOT NULL,
                                 comment_count INTEGER NOT NULL,
-                                UNIQUE (reddit_id) ON CONFLICT REPLACE
+                                UNIQUE (reddit_id) ON CONFLICT IGNORE
 );

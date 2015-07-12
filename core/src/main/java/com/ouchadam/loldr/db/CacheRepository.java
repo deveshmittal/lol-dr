@@ -4,8 +4,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.ouchadam.loldr.DataSource;
-import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.data.Data;
 import com.ouchadam.loldr.data.SimpleDate;
 import com.ouchadam.loldr.feed.PostProvider;
@@ -25,16 +23,16 @@ public class CacheRepository {
         this.postSummarySimpleDateFormatter = postSummarySimpleDateFormatter;
     }
 
-    public Observable<DataSource<Ui.PostSummary>> subreddit(String subreddit) {
+    public Observable<Feed> subreddit(String subreddit) {
         return Observable.just(subreddit)
-                .map(queryForSubreddit())
-                .onErrorResumeNext(Observable.<DataSource<Ui.PostSummary>>empty());
+                .map(queryForSubreddit(""))
+                .onErrorResumeNext(Observable.<Feed>empty());
     }
 
-    private Func1<String, DataSource<Ui.PostSummary>> queryForSubreddit() {
-        return new Func1<String, DataSource<Ui.PostSummary>>() {
+    private Func1<String, Feed> queryForSubreddit(final String afterId) {
+        return new Func1<String, Feed>() {
             @Override
-            public PostProvider.PostSummarySource call(String subreddit) {
+            public Feed call(String subreddit) {
                 Cursor result = contentResolver.query(
                         ContentProvider.POSTS,
                         null,
@@ -43,38 +41,44 @@ public class CacheRepository {
                         null
                 );
                 if (result.moveToFirst()) {
-                    return new PostProvider.PostSummarySource(result);
+                    return new Feed(new PostProvider.PostSummarySource(result), afterId);
                 }
                 throw new RuntimeException("empty db for " + subreddit);
             }
         };
     }
 
-    public Func1<? super Data.Feed, DataSource<Ui.PostSummary>> saveSubreddit(final String subreddit) {
-        return new Func1<Data.Feed, DataSource<Ui.PostSummary>>() {
+    public Func1<? super Data.Feed, Feed> saveSubreddit(final String subreddit) {
+        return new Func1<Data.Feed, Feed>() {
             @Override
-            public DataSource<Ui.PostSummary> call(Data.Feed feed) {
+            public Feed call(Data.Feed feed) {
                 int postCount = feed.getPosts().size();
-                ContentValues[] bulkValues = new ContentValues[postCount];
+                ContentValues[] postValues = createPostContentValues(feed, postCount, subreddit);
 
-                for (int index = 0; index < postCount; index++) {
-                    Data.Post post = feed.getPosts().get(index);
-                    ContentValues values = new ContentValues();
+                contentResolver.bulkInsert(ContentProvider.POSTS, postValues);
 
-                    DB.PostSummary.setTitle(post.getTitle(), values);
-                    DB.PostSummary.setCommentCount(post.getCommentCount(), values);
-                    DB.PostSummary.setRedditId(post.getId(), values);
-                    DB.PostSummary.setSubredditLabel(post.getSubreddit(), values);
-                    DB.PostSummary.setSubredditKey(subreddit, values);
-                    DB.PostSummary.setHoursAgoLabel(postSummarySimpleDateFormatter.format(SimpleDate.from(post.getCreatedDate())), values);
-
-                    bulkValues[index] = values;
-                }
-
-                contentResolver.bulkInsert(ContentProvider.POSTS, bulkValues);
-
-                return queryForSubreddit().call(subreddit);
+                return queryForSubreddit(feed.afterId()).call(subreddit);
             }
         };
+    }
+
+    private ContentValues[] createPostContentValues(Data.Feed feed, int postCount, String subredditKey) {
+        ContentValues[] postValues = new ContentValues[postCount];
+
+        for (int index = 0; index < postCount; index++) {
+            Data.Post post = feed.getPosts().get(index);
+            ContentValues values = new ContentValues();
+
+            DB.PostSummary.setTitle(post.getTitle(), values);
+            DB.PostSummary.setCommentCount(post.getCommentCount(), values);
+            DB.PostSummary.setRedditId(post.getId(), values);
+            DB.PostSummary.setSubredditKey(subredditKey, values);
+            DB.PostSummary.setSubredditLabel(post.getSubreddit(), values);
+            DB.PostSummary.setHoursAgoLabel(postSummarySimpleDateFormatter.format(SimpleDate.from(post.getCreatedDate())), values);
+            DB.PostSummary.setAfterId(feed.afterId(), values);
+
+            postValues[index] = values;
+        }
+        return postValues;
     }
 }

@@ -7,12 +7,12 @@ import android.util.Log;
 
 import com.ouchadam.loldr.BaseActivity;
 import com.ouchadam.loldr.BuildConfig;
-import com.ouchadam.loldr.DataSource;
 import com.ouchadam.loldr.Executor;
 import com.ouchadam.loldr.R;
 import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.UserTokenProvider;
 import com.ouchadam.loldr.data.Data;
+import com.ouchadam.loldr.db.Feed;
 import com.ouchadam.loldr.db.SuperRepo;
 import com.ouchadam.loldr.drawer.DrawerPresenter;
 import com.ouchadam.loldr.drawer.SubscriptionProvider;
@@ -85,8 +85,8 @@ public class FeedActivity extends BaseActivity {
         }
     };
 
-    private Subscriber<DataSource<Ui.PostSummary>> presentResult() {
-        return new Subscriber<DataSource<Ui.PostSummary>>() {
+    private Subscriber<Feed> presentResult() {
+        return new Subscriber<Feed>() {
             @Override
             public void onCompleted() {
                 // do nothing
@@ -98,13 +98,12 @@ public class FeedActivity extends BaseActivity {
             }
 
             @Override
-            public void onNext(DataSource<Ui.PostSummary> source) {
-//                FeedActivity.this.afterId = feed.afterId();
-//                cachedPosts.addAll(feed.getPosts());               // TODO replace this with a cursor
-//
-//                List<Ui.PostSummary> summaries = MarshallerFactory.newInstance(getResources()).posts().marshall(cachedPosts);
+            public void onNext(Feed feed) {
+                afterId = feed.getAfterId();
 
-                presenter.present(source);
+                Log.e("!!!", "source is : " + feed.getDataSource().size() + " big : next id : " + afterId);
+
+                presenter.present(feed.getDataSource());
             }
         };
     }
