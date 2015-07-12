@@ -35,11 +35,17 @@ public class CacheRepository {
         return new Func1<String, DataSource<Ui.PostSummary>>() {
             @Override
             public PostProvider.PostSummarySource call(String subreddit) {
-                Cursor result = contentResolver.query(ContentProvider.POSTS, null, null, null, null);
+                Cursor result = contentResolver.query(
+                        ContentProvider.POSTS,
+                        null,
+                        DB.Columns.PostSummary.SubredditKey + "=?",
+                        new String[]{subreddit},
+                        null
+                );
                 if (result.moveToFirst()) {
                     return new PostProvider.PostSummarySource(result);
                 }
-                throw new RuntimeException("empty db");
+                throw new RuntimeException("empty db for " + subreddit);
             }
         };
     }
@@ -48,9 +54,9 @@ public class CacheRepository {
         return new Func1<Data.Feed, DataSource<Ui.PostSummary>>() {
             @Override
             public DataSource<Ui.PostSummary> call(Data.Feed feed) {
-
                 int postCount = feed.getPosts().size();
                 ContentValues[] bulkValues = new ContentValues[postCount];
+
                 for (int index = 0; index < postCount; index++) {
                     Data.Post post = feed.getPosts().get(index);
                     ContentValues values = new ContentValues();
@@ -58,13 +64,15 @@ public class CacheRepository {
                     DB.PostSummary.setTitle(post.getTitle(), values);
                     DB.PostSummary.setCommentCount(post.getCommentCount(), values);
                     DB.PostSummary.setRedditId(post.getId(), values);
-                    DB.PostSummary.setSubreddit(post.getSubreddit(), values);
+                    DB.PostSummary.setSubredditLabel(post.getSubreddit(), values);
+                    DB.PostSummary.setSubredditKey(subreddit, values);
                     DB.PostSummary.setHoursAgoLabel(postSummarySimpleDateFormatter.format(SimpleDate.from(post.getCreatedDate())), values);
 
                     bulkValues[index] = values;
                 }
 
                 contentResolver.bulkInsert(ContentProvider.POSTS, bulkValues);
+
                 return queryForSubreddit().call(subreddit);
             }
         };

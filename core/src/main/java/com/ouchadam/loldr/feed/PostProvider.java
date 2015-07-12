@@ -114,7 +114,7 @@ public class PostProvider implements Presenter.PostSourceProvider {
 
                 @Override
                 public String getSubreddit() {
-                    return DB.PostSummary.getSubreddit(cursor);
+                    return DB.PostSummary.getSubredditLabel(cursor);
                 }
 
                 @Override
