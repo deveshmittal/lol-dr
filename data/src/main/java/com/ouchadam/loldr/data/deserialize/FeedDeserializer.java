@@ -28,11 +28,13 @@ class FeedDeserializer implements JsonDeserializer<Data.Feed> {
             Data.Post post = new Post(
                     postJson.get("id").getAsString(),
                     postJson.get("title").getAsString(),
+                    postJson.get("author").getAsString(),
                     postJson.get("subreddit").getAsString(),
-                    postJson.get("ups").getAsInt(),
+                    postJson.get("score").getAsInt(),
                     postJson.get("num_comments").getAsInt(),
-                    postJson.get("created_utc").getAsLong()
-            );
+                    postJson.get("created_utc").getAsLong(),
+                    postJson.get("saved").getAsBoolean(),
+                    postJson.get("thumbnail").getAsString());
 
             posts.add(post);
         }
@@ -44,18 +46,24 @@ class FeedDeserializer implements JsonDeserializer<Data.Feed> {
 
         private final String id;
         private final String title;
+        private final String author;
         private final String subreddit;
-        private final int ups;
+        private final int score;
         private final int commentCount;
         private final long createdUtcTimeStamp;
+        private final boolean saved;
+        private final String thumbnail;
 
-        public Post(String id, String title, String subreddit, int ups, int commentCount, long createdUtcTimeStamp) {
+        public Post(String id, String title, String author, String subreddit, int score, int commentCount, long createdUtcTimeStamp, boolean saved, String thumbnail) {
             this.id = id;
             this.title = title;
+            this.author = author;
             this.subreddit = subreddit;
-            this.ups = ups;
+            this.score = score;
             this.commentCount = commentCount;
             this.createdUtcTimeStamp = createdUtcTimeStamp;
+            this.saved = saved;
+            this.thumbnail = thumbnail;
         }
 
         @Override
@@ -74,8 +82,8 @@ class FeedDeserializer implements JsonDeserializer<Data.Feed> {
         }
 
         @Override
-        public int getUps() {
-            return ups;
+        public int getScore() {
+            return score;
         }
 
         @Override
@@ -87,6 +95,22 @@ class FeedDeserializer implements JsonDeserializer<Data.Feed> {
         public long getCreatedDate() {
             return createdUtcTimeStamp;
         }
+
+        @Override
+        public String getAuthor() {
+            return author;
+        }
+
+        @Override
+        public boolean isSaved() {
+            return saved;
+        }
+
+        @Override
+        public String getThumbnailUrl() {
+            return thumbnail;
+        }
+
     }
 
     private static class Feed implements Data.Feed {
