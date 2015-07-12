@@ -21,6 +21,11 @@ public class SubscriptionProvider implements DrawerPresenter.SubscriptionSourceP
     }
 
     @Override
+    public void close() {
+        // do nothing
+    }
+
+    @Override
     public int size() {
         return subscriptionSource.size();
     }
@@ -45,6 +50,11 @@ public class SubscriptionProvider implements DrawerPresenter.SubscriptionSourceP
         @Override
         public Ui.Subscription get(final int position) {
             return subscriptions.get(position);
+        }
+
+        @Override
+        public void close() {
+            // do nothing
         }
 
     }

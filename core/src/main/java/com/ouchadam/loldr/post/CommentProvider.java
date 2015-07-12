@@ -22,6 +22,11 @@ public class CommentProvider implements Presenter.CommentSourceProvider {
     }
 
     @Override
+    public void close() {
+        // do nothing
+    }
+
+    @Override
     public int size() {
         return commentSource.size();
     }
@@ -71,6 +76,11 @@ public class CommentProvider implements Presenter.CommentSourceProvider {
                     return dataPosts.get(position).isMore();
                 }
             };
+        }
+
+        @Override
+        public void close() {
+            // do nothing
         }
 
     }

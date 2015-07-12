@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS 'post_summary' (
                                 reddit_id TEXT NOT NULL,
                                 title TEXT NOT NULL,
                                 subreddit TEXT NOT NULL,
-                                hours_ago INTEGER NOT NULL,
+                                hours_ago_label TEXT NOT NULL,
                                 comment_count INTEGER NOT NULL,
                                 UNIQUE (reddit_id) ON CONFLICT REPLACE
 );

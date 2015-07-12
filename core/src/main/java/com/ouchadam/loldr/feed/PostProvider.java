@@ -1,23 +1,29 @@
 package com.ouchadam.loldr.feed;
 
+import android.database.Cursor;
+
 import com.ouchadam.loldr.DataSource;
 import com.ouchadam.loldr.Ui;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.ouchadam.loldr.sql.DB;
 
 public class PostProvider implements Presenter.PostSourceProvider {
 
-    private final PostSummarySource postSummarySource = new PostSummarySource();
+    private DataSource<Ui.PostSummary> postSummarySource = new PostSummarySource();
 
     @Override
     public void swap(DataSource<Ui.PostSummary> source) {
-        postSummarySource.postSummaries.addAll(((PostProvider.PostSummarySource) source).postSummaries);
+        this.postSummarySource.close();
+        this.postSummarySource = source;
     }
 
     @Override
     public Ui.PostSummary get(int position) {
         return postSummarySource.get(position);
+    }
+
+    @Override
+    public void close() {
+        postSummarySource.close();
     }
 
     @Override
@@ -27,24 +33,55 @@ public class PostProvider implements Presenter.PostSourceProvider {
 
     public static class PostSummarySource implements DataSource<Ui.PostSummary> {
 
-        private final List<Ui.PostSummary> postSummaries;
+        private Cursor cursor;
 
         public PostSummarySource() {
-            this(new ArrayList<Ui.PostSummary>());
+            this(null);
         }
 
-        public PostSummarySource(List<Ui.PostSummary> postSummaries) {
-            this.postSummaries = postSummaries;
+        public PostSummarySource(Cursor cursor) {
+            this.cursor = cursor;
         }
 
         @Override
         public int size() {
-            return postSummaries.size();
+            return cursor.getCount();
         }
 
         @Override
-        public Ui.PostSummary get(final int position) {
-            return postSummaries.get(position);
+        public Ui.PostSummary get(int position) {
+            cursor.moveToPosition(position);
+            return new Ui.PostSummary() {
+                @Override
+                public String getId() {
+                    return DB.PostSummary.getRedditId(cursor);
+                }
+
+                @Override
+                public String getTitle() {
+                    return DB.PostSummary.getTitle(cursor);
+                }
+
+                @Override
+                public String getTime() {
+                    return DB.PostSummary.getHoursAgoLabel(cursor);
+                }
+
+                @Override
+                public String getSubreddit() {
+                    return DB.PostSummary.getSubreddit(cursor);
+                }
+
+                @Override
+                public String getCommentCount() {
+                    return String.valueOf(DB.PostSummary.getCommentCount(cursor));
+                }
+            };
+        }
+
+        @Override
+        public void close() {
+            cursor.close();
         }
 
     }

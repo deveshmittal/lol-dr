@@ -25,7 +25,7 @@ public final class PostSummarySimpleDateFormatter {
         return new PostSummarySimpleDateFormatter(yearsFormat, daysFormat, hoursFormat, minutesFormat);
     }
 
-    private PostSummarySimpleDateFormatter(String yearsFormat, String daysFormat, String hoursFormat, String minutesFormat) {
+    public PostSummarySimpleDateFormatter(String yearsFormat, String daysFormat, String hoursFormat, String minutesFormat) {
         this.yearsFormat = yearsFormat;
         this.daysFormat = daysFormat;
         this.hoursFormat = hoursFormat;

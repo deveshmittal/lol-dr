@@ -6,4 +6,6 @@ public interface DataSource<T> {
 
     T get(int position);
 
+    void close();
+
 }
