@@ -29,7 +29,7 @@
         android:id="@+id/feed_post_summary_text_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14dp"
+        android:textSize="15dp"
         android:fontFamily="sans-serif-light"
         android:textColor="#333333"
         android:textStyle="bold"
@@ -39,7 +39,7 @@
         android:id="@+id/feed_post_summary_text_author_and_subreddit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="10dp"
+        android:textSize="12dp"
         android:fontFamily="sans-serif-light"
         android:textColor="#4a90e2"
         android:paddingBottom="3dp" />
@@ -48,7 +48,7 @@
         android:id="@+id/feed_post_summary_text_score_and_comment_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="10dp"
+        android:textSize="12dp"
         android:fontFamily="sans-serif-light"
         android:textColor="#555555" />
 
