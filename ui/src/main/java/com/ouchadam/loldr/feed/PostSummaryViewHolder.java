@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.ui.R;
@@ -15,43 +14,30 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
 
     private final View rootView;
     private final TextView titleView;
-    private final TextView timeView;
-    private final TextView commentsView;
-    private final TextView subredditView;
-    private final TextView authorView;
-    private final TextView scoreView;
+    private final TextView authorAndSubreddit;
+    private final TextView scoreAndCommentCount;
     private final ImageView thumbnailView;
-    private final View saveView;
     private final Presenter.Listener postClickListener;
 
     static PostSummaryViewHolder inflate(ViewGroup parent, LayoutInflater layoutInflater, Presenter.Listener postClickListener) {
         View view = layoutInflater.inflate(R.layout.view_feed_post_summary, parent, false);
 
         TextView titleView = (TextView) view.findViewById(R.id.feed_post_summary_text_title);
-        TextView timeView = (TextView) view.findViewById(R.id.feed_post_summary_text_time);
-        TextView commentsView = (TextView) view.findViewById(R.id.feed_post_summary_text_comments);
-        TextView subredditView = (TextView) view.findViewById(R.id.feed_post_summary_text_subreddit);
-        TextView authorView = (TextView) view.findViewById(R.id.feed_post_summary_text_author);
-        TextView scoreView = (TextView) view.findViewById(R.id.feed_post_summary_text_score);
+        TextView authorAndSubreddit = (TextView) view.findViewById(R.id.feed_post_summary_text_author_and_subreddit);
+        TextView scoreAndCommentCount = (TextView) view.findViewById(R.id.feed_post_summary_text_score_and_comment_count);
         ImageView thumbnailView = (ImageView) view.findViewById(R.id.feed_post_summary_image_thumbnail);
-        View saveView = view.findViewById(R.id.feed_post_summary_image_save);
 
-        return new PostSummaryViewHolder(view, titleView, timeView, commentsView, subredditView,
-                authorView, scoreView, thumbnailView, saveView, postClickListener);
+        return new PostSummaryViewHolder(view, titleView, authorAndSubreddit, scoreAndCommentCount, thumbnailView, postClickListener);
     }
 
-    private PostSummaryViewHolder(View itemView, TextView titleView, TextView timeView, TextView commentsView,
-                                  TextView subredditView, TextView authorView, TextView scoreView, ImageView thumbnailView, View saveView, Presenter.Listener postClickListener) {
+    private PostSummaryViewHolder(View itemView, TextView titleView, TextView authorAndSubreddit,
+                                  TextView scoreAndCommentCount, ImageView thumbnailView, Presenter.Listener postClickListener) {
         super(itemView);
         this.rootView = itemView;
         this.titleView = titleView;
-        this.timeView = timeView;
-        this.commentsView = commentsView;
-        this.subredditView = subredditView;
-        this.authorView = authorView;
-        this.scoreView = scoreView;
+        this.authorAndSubreddit = authorAndSubreddit;
+        this.scoreAndCommentCount = scoreAndCommentCount;
         this.thumbnailView = thumbnailView;
-        this.saveView = saveView;
         this.postClickListener = postClickListener;
     }
 
@@ -59,11 +45,8 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
         setClickListener(postSummary);
         setThumbnailClickListener(postSummary);
         setTitle(postSummary.getTitle());
-        setTime(postSummary.getTime());
-        setCommentsCount(postSummary.getCommentCount());
-        setSubreddit(postSummary.getSubreddit());
-        authorView.setText(postSummary.getAuthor());
-        scoreView.setText(postSummary.getScore());
+        authorAndSubreddit.setText(postSummary.getAuthor() + " in " + postSummary.getSubreddit());
+        scoreAndCommentCount.setText(postSummary.getScore() + " points" + " | " + postSummary.getCommentCount() + " comments | " + postSummary.getTime());
         setThumbnail(postSummary.getImageUrl());
     }
 
@@ -97,29 +80,11 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
                 postClickListener.onClick(postSummary);
             }
         });
-        saveView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                postClickListener.onClickSave(postSummary);
-            }
-        });
     }
 
     private void setTitle(String title) {
         titleView.setText(title);
         rootView.setContentDescription(title);
-    }
-
-    private void setTime(String time) {
-        timeView.setText(time);
-    }
-
-    private void setCommentsCount(String count) {
-        commentsView.setText(count);
-    }
-
-    private void setSubreddit(String subredditName) {
-        subredditView.setText(subredditName);
     }
 
 }
