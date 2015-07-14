@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.ui.R;
 
@@ -68,7 +69,7 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
         if (imageUrl == null || imageUrl.isEmpty() ||  "default".equals(imageUrl)) {
             thumbnailView.setImageResource(R.drawable.ic_link);
         } else {
-            thumbnailView.setImageResource(R.drawable.ic_image_placeholder);
+            Glide.with(thumbnailView.getContext()).load(imageUrl).into(thumbnailView);
         }
         thumbnailView.setVisibility(View.VISIBLE);
     }
