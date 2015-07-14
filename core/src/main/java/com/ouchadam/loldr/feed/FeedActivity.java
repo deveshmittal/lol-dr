@@ -28,7 +28,7 @@ public class FeedActivity extends BaseActivity {
     private static final String ACTION = BuildConfig.APPLICATION_ID + ".FEED";
 
     private static final String EXTRA_SUBREDDIT = "subreddit";
-    private static final String DEFAULT_SUBREDDIT = "news";
+    private static final String DEFAULT_SUBREDDIT = "all";
 
     private final Executor executor;
 

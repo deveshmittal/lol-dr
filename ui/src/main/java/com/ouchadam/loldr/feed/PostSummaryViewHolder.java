@@ -1,6 +1,12 @@
 package com.ouchadam.loldr.feed;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,9 +52,25 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
         setClickListener(postSummary);
         setThumbnailClickListener(postSummary);
         setTitle(postSummary.getTitle());
-        authorAndSubreddit.setText(postSummary.getAuthor() + " in " + postSummary.getSubreddit());
-        scoreAndCommentCount.setText(postSummary.getScore() + " points" + " | " + postSummary.getCommentCount() + " comments | " + postSummary.getTime());
+        setAuthAndSubreddit(postSummary);
+        setScoreAndCommentCount(postSummary);
         setThumbnail(postSummary.getImageUrl());
+    }
+
+    private void setScoreAndCommentCount(Ui.PostSummary postSummary) {
+        scoreAndCommentCount.setText(postSummary.getScore() + " points" + " | " + postSummary.getCommentCount() + " comments | " + postSummary.getTime());
+    }
+
+    private void setAuthAndSubreddit(Ui.PostSummary postSummary) {
+        authorAndSubreddit.setText(createSpan(postSummary));
+    }
+
+    private Spannable createSpan(Ui.PostSummary postSummary) {
+        String source = postSummary.getAuthor() + " in " + postSummary.getSubreddit();
+        SpannableStringBuilder spannableStringBuilder = SpannableStringBuilder.valueOf(source);
+        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), source.indexOf(postSummary.getSubreddit()), source.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableStringBuilder.setSpan(new ForegroundColorSpan(rootView.getResources().getColor(android.R.color.black)), source.indexOf("in"), source.indexOf("in") + "in".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableStringBuilder;
     }
 
     private void setThumbnailClickListener(final Ui.PostSummary postSummary) {
