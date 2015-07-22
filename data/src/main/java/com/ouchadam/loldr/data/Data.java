@@ -28,6 +28,7 @@ public final class Data {
 
         String getThumbnailUrl();
 
+        String getExternalLink();
     }
 
     public interface Feed {

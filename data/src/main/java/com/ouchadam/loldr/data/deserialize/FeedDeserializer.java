@@ -34,8 +34,8 @@ class FeedDeserializer implements JsonDeserializer<Data.Feed> {
                     postJson.get("num_comments").getAsInt(),
                     postJson.get("created_utc").getAsLong(),
                     postJson.get("saved").getAsBoolean(),
-                    postJson.get("thumbnail").getAsString());
-
+                    postJson.get("thumbnail").getAsString(),
+                    postJson.get("url").getAsString());
             posts.add(post);
         }
 
@@ -53,8 +53,9 @@ class FeedDeserializer implements JsonDeserializer<Data.Feed> {
         private final long createdUtcTimeStamp;
         private final boolean saved;
         private final String thumbnail;
+        private final String url;
 
-        public Post(String id, String title, String author, String subreddit, int score, int commentCount, long createdUtcTimeStamp, boolean saved, String thumbnail) {
+        public Post(String id, String title, String author, String subreddit, int score, int commentCount, long createdUtcTimeStamp, boolean saved, String thumbnail, String url) {
             this.id = id;
             this.title = title;
             this.author = author;
@@ -64,6 +65,7 @@ class FeedDeserializer implements JsonDeserializer<Data.Feed> {
             this.createdUtcTimeStamp = createdUtcTimeStamp;
             this.saved = saved;
             this.thumbnail = thumbnail;
+            this.url = url;
         }
 
         @Override
@@ -109,6 +111,11 @@ class FeedDeserializer implements JsonDeserializer<Data.Feed> {
         @Override
         public String getThumbnailUrl() {
             return thumbnail;
+        }
+
+        @Override
+        public String getExternalLink() {
+            return url;
         }
 
     }
