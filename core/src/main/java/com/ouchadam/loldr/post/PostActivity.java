@@ -2,11 +2,11 @@ package com.ouchadam.loldr.post;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.ouchadam.loldr.BaseActivity;
 import com.ouchadam.loldr.BuildConfig;
 import com.ouchadam.loldr.Executor;
+import com.ouchadam.loldr.LogSubscriber;
 import com.ouchadam.loldr.UserTokenProvider;
 import com.ouchadam.loldr.data.Data;
 import com.ouchadam.loldr.data.Repository;
@@ -48,17 +48,7 @@ public class PostActivity extends BaseActivity {
     }
 
     private Subscriber<Data.Comments> presentResult() {
-        return new Subscriber<Data.Comments>() {
-            @Override
-            public void onCompleted() {
-                // do nothing
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e("!!!", "Something went wrong", e);
-            }
-
+        return new LogSubscriber<Data.Comments>() {
             @Override
             public void onNext(Data.Comments comments) {
                 List<Data.Comment> dataPosts = comments.getComments();

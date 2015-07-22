@@ -4,15 +4,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.ouchadam.loldr.BaseActivity;
 import com.ouchadam.loldr.BuildConfig;
 import com.ouchadam.loldr.Executor;
-import com.ouchadam.loldr.UserTokenProvider;
+import com.ouchadam.loldr.LogSubscriber;
 import com.ouchadam.loldr.R;
 import com.ouchadam.loldr.Ui;
+import com.ouchadam.loldr.UserTokenProvider;
 import com.ouchadam.loldr.data.Data;
 import com.ouchadam.loldr.data.Repository;
 import com.ouchadam.loldr.drawer.DrawerPresenter;
@@ -108,17 +108,7 @@ public class FeedActivity extends BaseActivity {
     };
 
     private Subscriber<Data.Feed> presentResult() {
-        return new Subscriber<Data.Feed>() {
-            @Override
-            public void onCompleted() {
-                // do nothing
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e("!!!", "Something went wrong", e);
-            }
-
+        return new LogSubscriber<Data.Feed>() {
             @Override
             public void onNext(Data.Feed feed) {
                 FeedActivity.this.afterId = feed.afterId();
@@ -132,17 +122,7 @@ public class FeedActivity extends BaseActivity {
     }
 
     private Subscriber<Data.Subscriptions> updateDrawer() {
-        return new Subscriber<Data.Subscriptions>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
+        return new LogSubscriber<Data.Subscriptions>() {
             @Override
             public void onNext(Data.Subscriptions subscriptions) {
                 List<Ui.Subscription> uiSubscriptions = new ArrayList<>();
