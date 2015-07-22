@@ -85,6 +85,11 @@ class MarshallerFactory {
                     public String getCommentCount() {
                         return String.valueOf(post.getCommentCount());
                     }
+
+                    @Override
+                    public String getExternalLink() {
+                        return post.getExternalLink();
+                    }
                 };
             }
         };

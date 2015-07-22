@@ -24,6 +24,8 @@ public final class Ui {
 
         String getCommentCount();
 
+        String getExternalLink();
+
     }
 
     public interface Comment {

@@ -1,6 +1,7 @@
 package com.ouchadam.loldr.feed;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.util.Log;
@@ -95,7 +96,9 @@ public class FeedActivity extends BaseActivity {
 
         @Override
         public void onClickLinkFrom(Ui.PostSummary postSummary) {
-            toast("TODO: open link from " + postSummary.getTitle());
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(postSummary.getExternalLink()));
+            startActivity(intent);
         }
 
         @Override
