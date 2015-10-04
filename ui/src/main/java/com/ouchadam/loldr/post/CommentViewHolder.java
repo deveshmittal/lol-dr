@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.ui.R;
 
 final class CommentViewHolder extends RecyclerView.ViewHolder {
@@ -46,20 +47,31 @@ final class CommentViewHolder extends RecyclerView.ViewHolder {
         this.authorView = authorView;
     }
 
-    public void setBody(String title) {
+    public void bind(Ui.Comment comment, int position) {
+        setPosition(position);
+        setDepth(comment.getDepth());
+
+        if (!comment.isMore()) {
+            setBody(comment.getBody());
+            setAuthor(comment.getAuthor());
+        }
+    }
+
+    private void setBody(String title) {
         bodyView.setText(title);
         rootView.setContentDescription(title);
     }
 
-    public void setAuthor(String time) {
+    private void setAuthor(String time) {
         authorView.setText(time);
     }
 
-    public void setPosition(int position) {
+    private void setPosition(int position) {
         rootView.setTag(POSITION_KEY, position);
     }
 
-    public void setDepth(int depth) {
+    private void setDepth(int depth) {
         rootView.setPadding(depth * 40, rootView.getPaddingTop(), rootView.getPaddingRight(), rootView.getPaddingBottom());
     }
+
 }

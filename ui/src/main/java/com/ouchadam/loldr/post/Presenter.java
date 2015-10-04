@@ -11,12 +11,12 @@ import com.ouchadam.loldr.ui.R;
 
 public class Presenter<T extends DataSource<Ui.Comment>> {
 
-    private final CommentAdapter<T> adapter;
+    private final PostDetailsAdapter<T> adapter;
 
     static <T extends DataSource<Ui.Comment>> Presenter<T> onCreate(Activity activity, SourceProvider<Ui.Comment, T> dataSource, Listener listener) {
         activity.setContentView(R.layout.activity_post);
 
-        CommentAdapter<T> adapter = new CommentAdapter<>(dataSource, activity.getLayoutInflater(), listener);
+        PostDetailsAdapter<T> adapter = new PostDetailsAdapter<>(dataSource, activity.getLayoutInflater(), listener);
 
         RecyclerView recyclerView = (RecyclerView) activity.findViewById(R.id.comment_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
@@ -25,7 +25,7 @@ public class Presenter<T extends DataSource<Ui.Comment>> {
         return new Presenter<>(adapter);
     }
 
-    private Presenter(CommentAdapter<T> adapter) {
+    private Presenter(PostDetailsAdapter<T> adapter) {
         this.adapter = adapter;
     }
 
