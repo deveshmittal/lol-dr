@@ -49,8 +49,7 @@ class PostDetailsAdapter extends RecyclerView.Adapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Ui.Comment comment = commentSource.get((Integer) view.getTag(CommentViewHolder.POSITION_KEY));
-                listener.onCommentClicked(comment);
+                // TODO
             }
         };
     }
