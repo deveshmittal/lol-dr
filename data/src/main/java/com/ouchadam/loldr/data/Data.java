@@ -29,6 +29,8 @@ public final class Data {
         String getThumbnailUrl();
 
         String getExternalLink();
+
+        String getContent();
     }
 
     public interface Feed {
@@ -50,6 +52,14 @@ public final class Data {
         int getDepth();
 
         boolean isMore();
+    }
+
+    public interface PostDetails {
+
+        Post getPost();
+
+        Comments getComments();
+
     }
 
     public interface Comments {

@@ -84,7 +84,7 @@ class PostDetailsAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return commentSource.size() + DETAILS_OFFSET;
+        return commentSource.size() + postSource.size();
     }
 
     public void notifyCommentSourceChanged(DataSource<Ui.Comment> dataSource) {

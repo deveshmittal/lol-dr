@@ -16,7 +16,7 @@ public class Presenter {
     static Presenter onCreate(Activity activity, PostDetailsSourceProvider p, CommentSourceProvider commentProvider, Listener listener) {
         activity.setContentView(R.layout.activity_post);
 
-        PostDetailsAdapter adapter = new PostDetailsAdapter(p, commentProvider, activity.getLayoutInflater(), listener);
+        PostDetailsAdapter adapter = new PostDetailsAdapter(commentProvider, p, activity.getLayoutInflater(), listener);
 
         RecyclerView recyclerView = (RecyclerView) activity.findViewById(R.id.comment_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));

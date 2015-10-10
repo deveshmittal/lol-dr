@@ -48,8 +48,8 @@ public class Repository {
         return api.getSubreddit(subredditName, 100, afterId);
     }
 
-    public Observable<Data.Comments> comments(String subredditName, String postId) {
-        return api.getComments(subredditName, postId);
+    public Observable<Data.PostDetails> postDetails(String subredditName, String postId) {
+        return api.getPostDetails(subredditName, postId);
     }
 
     public Observable<Data.Subscriptions> defaultSubscriptions() {
@@ -71,7 +71,7 @@ public class Repository {
         Observable<Data.Feed> getSubreddit(@Path("subreddit") String subreddit, @Query("limit") int limit, @Query("after") String afterId);
 
         @GET("/r/{subreddit}/comments/{postId}")
-        Observable<Data.Comments> getComments(@Path("subreddit") String subreddit, @Path("postId") String postId);
+        Observable<Data.PostDetails> getPostDetails(@Path("subreddit") String subreddit, @Path("postId") String postId);
 
         @GET("/")
         Observable<Data.Feed> getFrontPage(@Query("limit") int limit);
