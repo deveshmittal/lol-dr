@@ -23,7 +23,7 @@ public class PostActivity extends BaseActivity {
 
     private final Executor executor;
 
-    private Presenter<CommentProvider.CommentSource> presenter;
+    private Presenter presenter;
 
     public static Intent create(String subreddit, String postId) {
         Intent intent = new Intent(ACTION);
@@ -39,7 +39,7 @@ public class PostActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.presenter = Presenter.onCreate(this, new CommentProvider(), null);
+        this.presenter = Presenter.onCreate(this, new PostDetailsProvider(), new CommentProvider(), null);
 
         String subreddit = getIntent().getStringExtra(EXTRA_SUBREDDIT);
         String postId = getIntent().getStringExtra(EXTA_POST_ID);
@@ -52,7 +52,7 @@ public class PostActivity extends BaseActivity {
             @Override
             public void onNext(Data.Comments comments) {
                 List<Data.Comment> dataPosts = comments.getComments();
-                presenter.present(new CommentProvider.CommentSource(dataPosts));
+                presenter.presentComments(new CommentProvider.CommentSource(dataPosts));
             }
         };
     }

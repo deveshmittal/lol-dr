@@ -10,16 +10,21 @@ import com.ouchadam.loldr.SourceProvider;
 import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.post.Presenter.Listener;
 
-class PostDetailsAdapter<T extends DataSource<Ui.Comment>> extends RecyclerView.Adapter {
+class PostDetailsAdapter extends RecyclerView.Adapter {
 
-    public static final int DETAILS_OFFSET = 1;
+    private static final int DETAILS_OFFSET = 1;
+
     private final LayoutInflater layoutInflater;
     private final Listener listener;
 
-    private SourceProvider<Ui.Comment, T> dataSource;
+    private final SourceProvider<Ui.Comment, DataSource<Ui.Comment>> commentSource;
+    private final SourceProvider<Ui.PostDetails, DataSource<Ui.PostDetails>> postSource;
 
-    PostDetailsAdapter(SourceProvider<Ui.Comment, T> dataSource, LayoutInflater layoutInflater, Listener listener) {
-        this.dataSource = dataSource;
+    PostDetailsAdapter(SourceProvider<Ui.Comment, DataSource<Ui.Comment>> commentSource,
+                       SourceProvider<Ui.PostDetails, DataSource<Ui.PostDetails>> postSource,
+                       LayoutInflater layoutInflater, Listener listener) {
+        this.commentSource = commentSource;
+        this.postSource = postSource;
         this.layoutInflater = layoutInflater;
         this.listener = listener;
     }
@@ -44,7 +49,7 @@ class PostDetailsAdapter<T extends DataSource<Ui.Comment>> extends RecyclerView.
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Ui.Comment comment = dataSource.get((Integer) view.getTag(CommentViewHolder.POSITION_KEY));
+                Ui.Comment comment = commentSource.get((Integer) view.getTag(CommentViewHolder.POSITION_KEY));
                 listener.onCommentClicked(comment);
             }
         };
@@ -54,10 +59,11 @@ class PostDetailsAdapter<T extends DataSource<Ui.Comment>> extends RecyclerView.
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (position == 0) {
             DetailsViewHolder detailsViewHolder = (DetailsViewHolder) viewHolder;
-            detailsViewHolder.bind();
+            Ui.PostDetails postDetails = postSource.get(position);
+            detailsViewHolder.bind(postDetails);
         } else {
             int truePosition = getTruePosition(position);
-            Ui.Comment comment = dataSource.get(truePosition);
+            Ui.Comment comment = commentSource.get(truePosition);
             CommentViewHolder commentViewHolder = (CommentViewHolder) viewHolder;
             commentViewHolder.bind(comment, truePosition);
         }
@@ -68,7 +74,7 @@ class PostDetailsAdapter<T extends DataSource<Ui.Comment>> extends RecyclerView.
         if (position == 0) {
             return DetailsViewHolder.VIEW_TYPE_DETAILS;
         } else {
-            return dataSource.get(getTruePosition(position)).isMore() ? CommentViewHolder.VIEW_TYPE_MORE : CommentViewHolder.VIEW_TYPE_COMMENT;
+            return commentSource.get(getTruePosition(position)).isMore() ? CommentViewHolder.VIEW_TYPE_MORE : CommentViewHolder.VIEW_TYPE_COMMENT;
         }
     }
 
@@ -78,11 +84,16 @@ class PostDetailsAdapter<T extends DataSource<Ui.Comment>> extends RecyclerView.
 
     @Override
     public int getItemCount() {
-        return dataSource.size();
+        return commentSource.size() + DETAILS_OFFSET;
     }
 
-    public void notifyDataSourceChanged(T dataSource) {
-        this.dataSource.swap(dataSource);
+    public void notifyCommentSourceChanged(DataSource<Ui.Comment> dataSource) {
+        this.commentSource.swap(dataSource);
+        notifyDataSetChanged();
+    }
+
+    public void notifyPostSourceChanged(DataSource<Ui.PostDetails> dataSource) {
+        this.postSource.swap(dataSource);
         notifyDataSetChanged();
     }
 }

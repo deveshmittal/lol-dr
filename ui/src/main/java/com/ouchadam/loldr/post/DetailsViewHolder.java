@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.ui.R;
 
 final class DetailsViewHolder extends RecyclerView.ViewHolder {
@@ -14,27 +15,25 @@ final class DetailsViewHolder extends RecyclerView.ViewHolder {
 
     private final View rootView;
     private final TextView bodyView;
-    private final TextView authorView;
 
     static DetailsViewHolder inflate(ViewGroup parent, LayoutInflater layoutInflater, View.OnClickListener postClickListener) {
-        View view = layoutInflater.inflate(R.layout.view_post_comment, parent, false);
+        View view = layoutInflater.inflate(R.layout.view_post_details, parent, false);
 
-        TextView bodyView = (TextView) view.findViewById(R.id.post_comment_body);
-        TextView authorView = (TextView) view.findViewById(R.id.post_comment_author);
+        TextView bodyView = (TextView) view.findViewById(R.id.post_details_body);
 
         view.setOnClickListener(postClickListener);
 
-        return new DetailsViewHolder(view, bodyView, authorView);
+        return new DetailsViewHolder(view, bodyView);
     }
 
-    private DetailsViewHolder(View itemView, TextView bodyView, TextView authorView) {
+    private DetailsViewHolder(View itemView, TextView bodyView) {
         super(itemView);
         this.rootView = itemView;
         this.bodyView = bodyView;
-        this.authorView = authorView;
     }
 
-    public void bind() {
-
+    public void bind(Ui.PostDetails postDetails) {
+        bodyView.setText(postDetails.getBody());
     }
+
 }

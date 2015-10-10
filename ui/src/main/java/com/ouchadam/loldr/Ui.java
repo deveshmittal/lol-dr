@@ -42,6 +42,14 @@ public final class Ui {
 
     }
 
+    public interface PostDetails {
+
+        String getId();
+
+        String getBody();
+
+    }
+
     public interface Subscription {
 
         String getId();
