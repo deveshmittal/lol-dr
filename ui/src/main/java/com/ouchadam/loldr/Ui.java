@@ -50,6 +50,8 @@ public final class Ui {
 
         boolean isSelfPost();
 
+        PostSummary getPostSummary();
+
     }
 
     public interface Subscription {
