@@ -14,6 +14,12 @@ import java.util.List;
 
 class FeedDeserializer implements JsonDeserializer<Data.Feed> {
 
+    private final PostDeserializer postDeserializer;
+
+    public FeedDeserializer(PostDeserializer postDeserializer) {
+        this.postDeserializer = postDeserializer;
+    }
+
     @Override
     public Data.Feed deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject dataJson = json.getAsJsonObject().get("data").getAsJsonObject();
@@ -24,100 +30,11 @@ class FeedDeserializer implements JsonDeserializer<Data.Feed> {
 
         for (JsonElement postRootJson : postsJson) {
             JsonObject postJson = postRootJson.getAsJsonObject().get("data").getAsJsonObject();
-
-            Data.Post post = new Post(
-                    postJson.get("id").getAsString(),
-                    postJson.get("title").getAsString(),
-                    postJson.get("author").getAsString(),
-                    postJson.get("subreddit").getAsString(),
-                    postJson.get("score").getAsInt(),
-                    postJson.get("num_comments").getAsInt(),
-                    postJson.get("created_utc").getAsLong(),
-                    postJson.get("saved").getAsBoolean(),
-                    postJson.get("thumbnail").getAsString(),
-                    postJson.get("url").getAsString());
+            Data.Post post = postDeserializer.deserialize(postJson, typeOfT, context);
             posts.add(post);
         }
 
         return new Feed(posts, afterId);
-    }
-
-    private static class Post implements Data.Post {
-
-        private final String id;
-        private final String title;
-        private final String author;
-        private final String subreddit;
-        private final int score;
-        private final int commentCount;
-        private final long createdUtcTimeStamp;
-        private final boolean saved;
-        private final String thumbnail;
-        private final String url;
-
-        public Post(String id, String title, String author, String subreddit, int score, int commentCount, long createdUtcTimeStamp, boolean saved, String thumbnail, String url) {
-            this.id = id;
-            this.title = title;
-            this.author = author;
-            this.subreddit = subreddit;
-            this.score = score;
-            this.commentCount = commentCount;
-            this.createdUtcTimeStamp = createdUtcTimeStamp;
-            this.saved = saved;
-            this.thumbnail = thumbnail;
-            this.url = url;
-        }
-
-        @Override
-        public String getId() {
-            return id;
-        }
-
-        @Override
-        public String getTitle() {
-            return title;
-        }
-
-        @Override
-        public String getSubreddit() {
-            return subreddit;
-        }
-
-        @Override
-        public int getScore() {
-            return score;
-        }
-
-        @Override
-        public int getCommentCount() {
-            return commentCount;
-        }
-
-        @Override
-        public long getCreatedDate() {
-            return createdUtcTimeStamp;
-        }
-
-        @Override
-        public String getAuthor() {
-            return author;
-        }
-
-        @Override
-        public boolean isSaved() {
-            return saved;
-        }
-
-        @Override
-        public String getThumbnailUrl() {
-            return thumbnail;
-        }
-
-        @Override
-        public String getExternalLink() {
-            return url;
-        }
-
     }
 
     private static class Feed implements Data.Feed {

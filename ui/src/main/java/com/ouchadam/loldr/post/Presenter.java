@@ -3,34 +3,40 @@ package com.ouchadam.loldr.post;
 import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 
 import com.ouchadam.loldr.DataSource;
 import com.ouchadam.loldr.SourceProvider;
 import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.ui.R;
 
-public class Presenter<T extends DataSource<Ui.Comment>> {
+public class Presenter {
 
-    private final CommentAdapter<T> adapter;
+    private final PostDetailsAdapter adapter;
 
-    static <T extends DataSource<Ui.Comment>> Presenter<T> onCreate(Activity activity, SourceProvider<Ui.Comment, T> dataSource, Listener listener) {
+    static Presenter onCreate(Activity activity, PostDetailsSourceProvider p, CommentSourceProvider commentProvider, Listener listener) {
         activity.setContentView(R.layout.activity_post);
 
-        CommentAdapter<T> adapter = new CommentAdapter<>(dataSource, activity.getLayoutInflater(), listener);
+        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        PostDetailsAdapter adapter = new PostDetailsAdapter(new ViewHolderFactory(layoutInflater), commentProvider, p);
 
         RecyclerView recyclerView = (RecyclerView) activity.findViewById(R.id.comment_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setAdapter(adapter);
 
-        return new Presenter<>(adapter);
+        return new Presenter(adapter);
     }
 
-    private Presenter(CommentAdapter<T> adapter) {
+    private Presenter(PostDetailsAdapter adapter) {
         this.adapter = adapter;
     }
 
-    public void present(T dataSource) {
-        adapter.notifyDataSourceChanged(dataSource);
+    public void presentPostDetails(DataSource<Ui.PostDetails> postDetailsSource) {
+        adapter.notifyPostSourceChanged(postDetailsSource);
+    }
+
+    public void presentComments(DataSource<Ui.Comment> commentSource) {
+        adapter.notifyCommentSourceChanged(commentSource);
     }
 
     public interface Listener {
@@ -38,6 +44,10 @@ public class Presenter<T extends DataSource<Ui.Comment>> {
     }
 
     interface CommentSourceProvider<T extends DataSource<Ui.Comment>> extends SourceProvider<Ui.Comment, T> {
+
+    }
+
+    interface PostDetailsSourceProvider<T extends DataSource<Ui.PostDetails>> extends SourceProvider<Ui.PostDetails, T> {
 
     }
 

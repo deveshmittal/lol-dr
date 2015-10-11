@@ -11,8 +11,6 @@ import com.ouchadam.loldr.UserTokenProvider;
 import com.ouchadam.loldr.data.Data;
 import com.ouchadam.loldr.data.Repository;
 
-import java.util.List;
-
 import rx.Subscriber;
 
 public class PostActivity extends BaseActivity {
@@ -23,7 +21,7 @@ public class PostActivity extends BaseActivity {
 
     private final Executor executor;
 
-    private Presenter<CommentProvider.CommentSource> presenter;
+    private Presenter presenter;
 
     public static Intent create(String subreddit, String postId) {
         Intent intent = new Intent(ACTION);
@@ -39,20 +37,22 @@ public class PostActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.presenter = Presenter.onCreate(this, new CommentProvider(), null);
+        this.presenter = Presenter.onCreate(this, new PostDetailsProvider(), new CommentProvider(), null);
 
         String subreddit = getIntent().getStringExtra(EXTRA_SUBREDDIT);
         String postId = getIntent().getStringExtra(EXTA_POST_ID);
 
-        executor.execute(Repository.newInstance(UserTokenProvider.newInstance(this)).comments(subreddit, postId), presentResult());
+        Repository repository = Repository.newInstance(UserTokenProvider.newInstance(this));
+
+        executor.execute(repository.postDetails(subreddit, postId), presentPostDetails());
     }
 
-    private Subscriber<Data.Comments> presentResult() {
-        return new LogSubscriber<Data.Comments>() {
+    private Subscriber<Data.PostDetails> presentPostDetails() {
+        return new LogSubscriber<Data.PostDetails>() {
             @Override
-            public void onNext(Data.Comments comments) {
-                List<Data.Comment> dataPosts = comments.getComments();
-                presenter.present(new CommentProvider.CommentSource(dataPosts));
+            public void onNext(Data.PostDetails post) {
+                presenter.presentPostDetails(new PostDetailsProvider.PostDetailsSource(post.getPost()));
+                presenter.presentComments(new CommentProvider.CommentSource(post.getComments().getComments()));
             }
         };
     }

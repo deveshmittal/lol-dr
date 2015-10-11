@@ -9,17 +9,17 @@ public class DeserializerFactory {
     public Gson create() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         feed(gsonBuilder);
-        comments(gsonBuilder);
+        postDetails(gsonBuilder);
         subscriptions(gsonBuilder);
         return gsonBuilder.create();
     }
 
     private GsonBuilder feed(GsonBuilder gsonBuilder) {
-        return gsonBuilder.registerTypeAdapter(Data.Feed.class, new FeedDeserializer());
+        return gsonBuilder.registerTypeAdapter(Data.Feed.class, new FeedDeserializer(new PostDeserializer()));
     }
 
-    private GsonBuilder comments(GsonBuilder gsonBuilder) {
-        return gsonBuilder.registerTypeAdapter(Data.Comments.class, new PostDeserializer());
+    private GsonBuilder postDetails(GsonBuilder gsonBuilder) {
+        return gsonBuilder.registerTypeAdapter(Data.PostDetails.class, new PostDetailsDeserializer(new PostDeserializer()));
     }
 
     private GsonBuilder subscriptions(GsonBuilder gsonBuilder) {

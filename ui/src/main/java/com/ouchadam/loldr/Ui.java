@@ -42,6 +42,18 @@ public final class Ui {
 
     }
 
+    public interface PostDetails {
+
+        String getId();
+
+        String getBody();
+
+        boolean isSelfPost();
+
+        PostSummary getPostSummary();
+
+    }
+
     public interface Subscription {
 
         String getId();
