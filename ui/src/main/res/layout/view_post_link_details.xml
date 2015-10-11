@@ -1,14 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
+  android:orientation="horizontal"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:paddingTop="8dp"
-  android:paddingBottom="8dp">
+  android:gravity="center_vertical"
+  android:paddingLeft="4dp"
+  android:paddingRight="4dp"
+  android:paddingTop="12dp"
+  android:paddingBottom="12dp">
 
-  <TextView
-    android:id="@+id/post_details_body"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="0dp"
+    android:layout_weight="100"
+    android:layout_height="wrap_content"
+    android:paddingLeft="8dp">
+
+    <TextView
+      android:id="@+id/post_details_link_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="14dp"
+      android:fontFamily="sans-serif-light"
+      android:textColor="#333333"
+      android:textStyle="bold"
+      android:paddingBottom="6dp" />
+
+    <TextView
+      android:id="@+id/post_details_link_author_subreddit"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="12dp"
+      android:fontFamily="sans-serif-light"
+      android:textColor="#4a90e2"
+      android:paddingBottom="3dp" />
+
+    <TextView
+      android:id="@+id/post_details_link_score_comment_count"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="12dp"
+      android:fontFamily="sans-serif-light"
+      android:textColor="#555555" />
+
+  </LinearLayout>
+
+  <FrameLayout
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp">
+
+    <ImageView
+      android:id="@+id/post_details_link_thumbnail"
+      android:layout_width="80dp"
+      android:layout_height="80dp"
+      android:contentDescription="@null"
+      android:scaleType="fitXY"
+      android:layout_gravity="center_vertical" />
+
+  </FrameLayout>
 
 </LinearLayout>

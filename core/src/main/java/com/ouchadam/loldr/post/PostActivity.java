@@ -51,7 +51,8 @@ public class PostActivity extends BaseActivity {
         return new LogSubscriber<Data.PostDetails>() {
             @Override
             public void onNext(Data.PostDetails post) {
-                presenter.presentPostDetails(new PostDetailsProvider.PostDetailsSource(post.getPost()));
+                PostSummarySimpleDateFormatter dateFormatter = PostSummarySimpleDateFormatter.newInstance(getResources());
+                presenter.presentPostDetails(new PostDetailsProvider.PostDetailsSource(dateFormatter, post.getPost()));
                 presenter.presentComments(new CommentProvider.CommentSource(post.getComments().getComments()));
             }
         };

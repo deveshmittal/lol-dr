@@ -3,10 +3,11 @@ package com.ouchadam.loldr.post;
 import com.ouchadam.loldr.DataSource;
 import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.data.Data;
+import com.ouchadam.loldr.data.SimpleDate;
 
 public class PostDetailsProvider implements Presenter.PostDetailsSourceProvider<PostDetailsProvider.PostDetailsSource> {
 
-    private PostDetailsSource detailsSource = new PostDetailsSource(null);
+    private PostDetailsSource detailsSource = new PostDetailsSource(null, null);
 
     @Override
     public void swap(PostDetailsSource source) {
@@ -25,9 +26,11 @@ public class PostDetailsProvider implements Presenter.PostDetailsSourceProvider<
 
     static class PostDetailsSource implements DataSource<Ui.PostDetails> {
 
+        private final PostSummarySimpleDateFormatter dateFormatter;
         private final Data.Post post;
 
-        public PostDetailsSource(Data.Post post) {
+        public PostDetailsSource(PostSummarySimpleDateFormatter dateFormatter, Data.Post post) {
+            this.dateFormatter = dateFormatter;
             this.post = post;
         }
 
@@ -69,7 +72,7 @@ public class PostDetailsProvider implements Presenter.PostDetailsSourceProvider<
 
                         @Override
                         public String getScore() {
-                            return post.getScore() + "";
+                            return String.valueOf(post.getScore());
                         }
 
                         @Override
@@ -84,7 +87,8 @@ public class PostDetailsProvider implements Presenter.PostDetailsSourceProvider<
 
                         @Override
                         public String getTime() {
-                            return post.getCreatedDate() + "";
+                            SimpleDate date = SimpleDate.from(post.getCreatedDate());
+                            return dateFormatter.format(date);
                         }
 
                         @Override
