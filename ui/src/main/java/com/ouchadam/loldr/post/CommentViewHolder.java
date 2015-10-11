@@ -16,32 +16,37 @@ final class CommentViewHolder extends BindableViewHolder<Ui.Comment> {
     private final View rootView;
     private final TextView bodyView;
     private final TextView authorView;
+    private final View indentationView;
 
     static CommentViewHolder inflateComment(ViewGroup parent, LayoutInflater layoutInflater, View.OnClickListener postClickListener) {
         View view = layoutInflater.inflate(R.layout.view_post_comment, parent, false);
 
         TextView bodyView = (TextView) view.findViewById(R.id.post_comment_body);
         TextView authorView = (TextView) view.findViewById(R.id.post_comment_author);
+        View indentationView = view.findViewById(R.id.comment_indentation);
 
         view.setOnClickListener(postClickListener);
 
-        return new CommentViewHolder(view, bodyView, authorView);
+        return new CommentViewHolder(view, bodyView, authorView, indentationView);
     }
 
     static CommentViewHolder inflateMore(ViewGroup parent, LayoutInflater layoutInflater, View.OnClickListener postClickListener) {
         View view = layoutInflater.inflate(R.layout.view_post_more_comment, parent, false);
 
         TextView bodyView = (TextView) view.findViewById(R.id.post_comment_body);
+        View indentationView = view.findViewById(R.id.comment_indentation);
+
         view.setOnClickListener(postClickListener);
 
-        return new CommentViewHolder(view, bodyView, null);
+        return new CommentViewHolder(view, bodyView, null, indentationView);
     }
 
-    private CommentViewHolder(View itemView, TextView bodyView, TextView authorView) {
+    private CommentViewHolder(View itemView, TextView bodyView, TextView authorView, View indentationView) {
         super(itemView);
         this.rootView = itemView;
         this.bodyView = bodyView;
         this.authorView = authorView;
+        this.indentationView = indentationView;
     }
 
     @Override
@@ -69,7 +74,14 @@ final class CommentViewHolder extends BindableViewHolder<Ui.Comment> {
     }
 
     private void setDepth(int depth) {
-        rootView.setPadding(depth * 40, rootView.getPaddingTop(), rootView.getPaddingRight(), rootView.getPaddingBottom());
+        if (depth > 0) {
+            indentationView.setVisibility(View.VISIBLE);
+            int depthOffset = rootView.getResources().getDimensionPixelSize(R.dimen.comment_indent) * depth;
+            rootView.setPadding(depthOffset, rootView.getPaddingTop(), rootView.getPaddingRight(), rootView.getPaddingBottom());
+        } else {
+            indentationView.setVisibility(View.GONE);
+            rootView.setPadding(0, rootView.getPaddingTop(), rootView.getPaddingRight(), rootView.getPaddingBottom());
+        }
     }
 
 }
