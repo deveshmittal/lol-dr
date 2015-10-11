@@ -1,20 +1,17 @@
 package com.ouchadam.loldr.post;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ouchadam.loldr.BindableViewHolder;
 import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.ui.R;
 
-final class CommentViewHolder extends RecyclerView.ViewHolder {
+final class CommentViewHolder extends BindableViewHolder<Ui.Comment> {
 
     public static final int POSITION_KEY = R.id.tag_feed_position;
-
-    static final int VIEW_TYPE_MORE = 100;
-    static final int VIEW_TYPE_COMMENT = 50;
 
     private final View rootView;
     private final TextView bodyView;
@@ -47,6 +44,7 @@ final class CommentViewHolder extends RecyclerView.ViewHolder {
         this.authorView = authorView;
     }
 
+    @Override
     public void bind(Ui.Comment comment, int position) {
         setPosition(position);
         setDepth(comment.getDepth());

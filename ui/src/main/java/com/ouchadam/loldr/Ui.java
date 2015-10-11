@@ -48,6 +48,8 @@ public final class Ui {
 
         String getBody();
 
+        boolean isSelfPost();
+
     }
 
     public interface Subscription {

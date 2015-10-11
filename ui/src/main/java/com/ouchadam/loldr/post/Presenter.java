@@ -3,6 +3,7 @@ package com.ouchadam.loldr.post;
 import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 
 import com.ouchadam.loldr.DataSource;
 import com.ouchadam.loldr.SourceProvider;
@@ -16,7 +17,8 @@ public class Presenter {
     static Presenter onCreate(Activity activity, PostDetailsSourceProvider p, CommentSourceProvider commentProvider, Listener listener) {
         activity.setContentView(R.layout.activity_post);
 
-        PostDetailsAdapter adapter = new PostDetailsAdapter(commentProvider, p, activity.getLayoutInflater(), listener);
+        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        PostDetailsAdapter adapter = new PostDetailsAdapter(new ViewHolderFactory(layoutInflater), commentProvider, p);
 
         RecyclerView recyclerView = (RecyclerView) activity.findViewById(R.id.comment_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
