@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 
 import com.ouchadam.loldr.DataSource;
 import com.ouchadam.loldr.SourceProvider;
@@ -13,6 +14,7 @@ import com.ouchadam.loldr.ui.R;
 final class Presenter<T extends DataSource<Ui.PostSummary>> {
 
     private final PostSummaryAdapter<T> adapter;
+    private final TextView titleView;
 
     static <T extends DataSource<Ui.PostSummary>> Presenter<T> onCreate(
             AppCompatActivity activity,
@@ -21,10 +23,7 @@ final class Presenter<T extends DataSource<Ui.PostSummary>> {
             Listener listener) {
 
         activity.setContentView(R.layout.activity_feed);
-
-        activity.setSupportActionBar((Toolbar) activity.findViewById(R.id.toolbar));
-
-        activity.getSupportActionBar().setTitle(subreddit);
+        TextView titleView = (TextView) activity.findViewById(R.id.toolbar_title);
 
         PostSummaryAdapter<T> adapter = new PostSummaryAdapter<>(activity.getLayoutInflater(), listener, dataSource);
 
@@ -34,15 +33,20 @@ final class Presenter<T extends DataSource<Ui.PostSummary>> {
 
         recyclerView.addOnScrollListener(new PagingScrollListener(listener));
 
-        return new Presenter<>(adapter);
+        return new Presenter<>(adapter, titleView);
     }
 
-    private Presenter(PostSummaryAdapter<T> adapter) {
+    private Presenter(PostSummaryAdapter<T> adapter, TextView titleView) {
         this.adapter = adapter;
+        this.titleView = titleView;
     }
 
     public void present(T dataSource) {
         adapter.notifyDataSourceChanged(dataSource);
+    }
+
+    public void setTitle(String subreddit) {
+        titleView.setText(subreddit);
     }
 
     public interface Listener extends PagingListener {

@@ -8,15 +8,23 @@
   <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:fitsSystemWindows="false">
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.Toolbar
       android:id="@+id/toolbar"
       android:layout_height="wrap_content"
       android:layout_width="match_parent"
       android:minHeight="?attr/actionBarSize"
-      android:background="@android:color/white" />
+      android:background="#9C27B0">
+
+      <TextView
+        style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+        android:id="@+id/toolbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textColor="@android:color/white" />
+
+    </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView
       android:id="@+id/feed_recycler"

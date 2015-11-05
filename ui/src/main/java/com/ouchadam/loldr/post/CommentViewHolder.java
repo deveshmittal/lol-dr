@@ -1,5 +1,6 @@
 package com.ouchadam.loldr.post;
 
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ final class CommentViewHolder extends BindableViewHolder<Ui.Comment> {
     private final TextView bodyView;
     private final TextView authorView;
     private final View indentationView;
+    private final View content;
 
     static CommentViewHolder inflateComment(ViewGroup parent, LayoutInflater layoutInflater, View.OnClickListener postClickListener) {
         View view = layoutInflater.inflate(R.layout.view_post_comment, parent, false);
@@ -24,10 +26,11 @@ final class CommentViewHolder extends BindableViewHolder<Ui.Comment> {
         TextView bodyView = (TextView) view.findViewById(R.id.post_comment_body);
         TextView authorView = (TextView) view.findViewById(R.id.post_comment_author);
         View indentationView = view.findViewById(R.id.comment_indentation);
+        View content = view.findViewById(R.id.comment_content);
 
         view.setOnClickListener(postClickListener);
 
-        return new CommentViewHolder(view, bodyView, authorView, indentationView);
+        return new CommentViewHolder(view, bodyView, authorView, indentationView, content);
     }
 
     static CommentViewHolder inflateMore(ViewGroup parent, LayoutInflater layoutInflater, View.OnClickListener postClickListener) {
@@ -35,18 +38,20 @@ final class CommentViewHolder extends BindableViewHolder<Ui.Comment> {
 
         TextView bodyView = (TextView) view.findViewById(R.id.post_comment_body);
         View indentationView = view.findViewById(R.id.comment_indentation);
+        View content = view.findViewById(R.id.comment_content);
 
         view.setOnClickListener(postClickListener);
 
-        return new CommentViewHolder(view, bodyView, null, indentationView);
+        return new CommentViewHolder(view, bodyView, null, indentationView, content);
     }
 
-    private CommentViewHolder(View itemView, TextView bodyView, TextView authorView, View indentationView) {
+    private CommentViewHolder(View itemView, TextView bodyView, TextView authorView, View indentationView, View content) {
         super(itemView);
         this.rootView = itemView;
         this.bodyView = bodyView;
         this.authorView = authorView;
         this.indentationView = indentationView;
+        this.content = content;
     }
 
     @Override
@@ -77,11 +82,26 @@ final class CommentViewHolder extends BindableViewHolder<Ui.Comment> {
         if (depth > 0) {
             indentationView.setVisibility(View.VISIBLE);
             int depthOffset = rootView.getResources().getDimensionPixelSize(R.dimen.comment_indent) * depth;
-            rootView.setPadding(depthOffset, rootView.getPaddingTop(), rootView.getPaddingRight(), rootView.getPaddingBottom());
+            content.setPadding(depthOffset, content.getPaddingTop(), content.getPaddingRight(), content.getPaddingBottom());
+
+            indentationView.setBackgroundColor(getColourForDepth(depth));
+
         } else {
             indentationView.setVisibility(View.GONE);
-            rootView.setPadding(0, rootView.getPaddingTop(), rootView.getPaddingRight(), rootView.getPaddingBottom());
+            content.setPadding(0, content.getPaddingTop(), content.getPaddingRight(), content.getPaddingBottom());
         }
+    }
+
+    private static final int DEPTH_COLOURS[] = {android.R.color.black, android.R.color.holo_blue_bright, android.R.color.holo_orange_dark};
+
+    private int getColourForDepth(int depth) {
+        Resources resources = rootView.getResources();
+
+
+        int normalisedDepth = (depth % DEPTH_COLOURS.length);
+
+        int colour = DEPTH_COLOURS[normalisedDepth];
+        return resources.getColor(colour);
     }
 
 }

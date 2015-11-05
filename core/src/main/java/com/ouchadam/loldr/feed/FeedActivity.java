@@ -60,6 +60,7 @@ public class FeedActivity extends BaseActivity {
         this.repository = Repository.newInstance(UserTokenProvider.newInstance(this));
         PostProvider postProvider = new PostProvider();
         this.presenter = Presenter.onCreate(this, postProvider, subreddit, listener);
+        presenter.setTitle(subreddit);
         this.drawerPresenter = new DrawerPresenter<>((NavigationView) findViewById(R.id.navigation_view), drawerListener, new SubscriptionProvider());
 
         executor.execute(repository.subreddit(subreddit), presentResult());

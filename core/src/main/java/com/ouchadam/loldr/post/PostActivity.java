@@ -7,9 +7,11 @@ import com.ouchadam.loldr.BaseActivity;
 import com.ouchadam.loldr.BuildConfig;
 import com.ouchadam.loldr.Executor;
 import com.ouchadam.loldr.LogSubscriber;
+import com.ouchadam.loldr.Ui;
 import com.ouchadam.loldr.UserTokenProvider;
 import com.ouchadam.loldr.data.Data;
 import com.ouchadam.loldr.data.Repository;
+import com.ouchadam.loldr.feed.FeedActivity;
 
 import rx.Subscriber;
 
@@ -22,6 +24,7 @@ public class PostActivity extends BaseActivity {
     private final Executor executor;
 
     private Presenter presenter;
+    private String subreddit;
 
     public static Intent create(String subreddit, String postId) {
         Intent intent = new Intent(ACTION);
@@ -37,12 +40,23 @@ public class PostActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.presenter = Presenter.onCreate(this, new PostDetailsProvider(), new CommentProvider(), null);
-
-        String subreddit = getIntent().getStringExtra(EXTRA_SUBREDDIT);
+        subreddit = getIntent().getStringExtra(EXTRA_SUBREDDIT);
         String postId = getIntent().getStringExtra(EXTA_POST_ID);
 
         Repository repository = Repository.newInstance(UserTokenProvider.newInstance(this));
+
+        this.presenter = Presenter.onCreate(this, new PostDetailsProvider(), new CommentProvider(), new Presenter.Listener() {
+            @Override
+            public void onCommentClicked(Ui.Comment comment) {
+            }
+
+            @Override
+            public void onTitleClicked() {
+                startActivity(FeedActivity.create(subreddit));
+            }
+        });
+
+        presenter.setTitle(subreddit);
 
         executor.execute(repository.postDetails(subreddit, postId), presentPostDetails());
     }
