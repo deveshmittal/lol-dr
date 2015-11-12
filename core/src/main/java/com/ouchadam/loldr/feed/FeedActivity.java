@@ -82,6 +82,7 @@ public class FeedActivity extends BaseActivity {
     private final Presenter.Listener listener = new Presenter.Listener() {
         @Override
         public void onClick(Ui.PostSummary postSummary) {
+            presenter.markSeen(postSummary);
             startActivity(PostActivity.create(postSummary.getSubreddit(), postSummary.getId()));
         }
 
@@ -100,6 +101,7 @@ public class FeedActivity extends BaseActivity {
 
         @Override
         public void onClickLinkFrom(Ui.PostSummary postSummary) {
+            presenter.markSeen(postSummary);
             EasyCustomTabs.getInstance().navigateTo(Uri.parse(postSummary.getExternalLink()), FeedActivity.this);
         }
 

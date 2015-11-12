@@ -14,44 +14,24 @@ import java.util.Set;
 class PostSummaryAdapter<T extends DataSource<Ui.PostSummary>> extends RecyclerView.Adapter<PostSummaryViewHolder> {
 
     private final LayoutInflater layoutInflater;
-    private final Presenter.Listener wrappedListener;
-    private Set<Ui.PostSummary> seenSummaries = new HashSet<>();
-
+    private final Presenter.Listener listener;
     private final SourceProvider<Ui.PostSummary, T> dataSource;
+    private final Set<Ui.PostSummary> seenSummaries = new HashSet<>();
 
-    PostSummaryAdapter(LayoutInflater layoutInflater, final Presenter.Listener listener, SourceProvider<Ui.PostSummary, T> dataSource) {
+    PostSummaryAdapter(LayoutInflater layoutInflater, final Presenter.Listener listener, final SourceProvider<Ui.PostSummary, T> dataSource) {
         this.layoutInflater = layoutInflater;
+        this.listener = listener;
         this.dataSource = dataSource;
-        wrappedListener = new Presenter.Listener() {
-            @Override
-            public void onClick(Ui.PostSummary postSummary) {
-                seenSummaries.add(postSummary);
-                notifyDataSetChanged();
-                listener.onClick(postSummary);
-            }
+    }
 
-            @Override
-            public void onClickSave(Ui.PostSummary postSummary) {
-                listener.onClickSave(postSummary);
-            }
-
-            @Override
-            public void onClickLinkFrom(Ui.PostSummary postSummary) {
-                notifyDataSetChanged();
-                listener.onClick(postSummary);
-                listener.onClickLinkFrom(postSummary);
-            }
-
-            @Override
-            public void onNextPageRequest() {
-                listener.onNextPageRequest();
-            }
-        };
+    public void markSeen(Ui.PostSummary postSummary) {
+        seenSummaries.add(postSummary);
+        notifyDataSetChanged();
     }
 
     @Override
     public PostSummaryViewHolder onCreateViewHolder(ViewGroup viewGroup, final int position) {
-        return PostSummaryViewHolder.inflate(viewGroup, layoutInflater, wrappedListener);
+        return PostSummaryViewHolder.inflate(viewGroup, layoutInflater, listener);
     }
 
     @Override

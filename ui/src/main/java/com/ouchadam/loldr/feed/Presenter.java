@@ -3,7 +3,6 @@ package com.ouchadam.loldr.feed;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.ouchadam.loldr.DataSource;
@@ -47,6 +46,10 @@ final class Presenter<T extends DataSource<Ui.PostSummary>> {
 
     public void setTitle(String subreddit) {
         titleView.setText(subreddit);
+    }
+
+    public void markSeen(Ui.PostSummary postSummary) {
+        adapter.markSeen(postSummary);
     }
 
     public interface Listener extends PagingListener {
