@@ -2,6 +2,7 @@
   <string name="app_name">lol;dr</string>
   <string name="label_activity_debug">lol;dr (debug)</string>
   <string name="label_activity_post">lol;dr Post</string>
+  <string name="label_activity_search">lol;dr Search</string>
   <string name="label_activity_feed">lol;dr Feed</string>
   <string name="label_launcher_entry">@string/app_name</string>
 
