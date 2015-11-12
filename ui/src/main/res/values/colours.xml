@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <color name="primary">#9C27B0</color>
+  <color name="secondary">#8E24AA</color>
+
+
+  <color name="depth_one">#9C27B0</color>
+  <color name="depth_two">#7C4DFF</color>
+  <color name="depth_three">#536DFE</color>
+  <color name="depth_four">#448AFF</color>
+  <!--<color name="depth_four">#40C4FF</color>-->
+
+
+  <!--<color name="depth_one">#9C27B0</color>-->
+  <!--<color name="depth_two">#E02E73</color>-->
+  <!--<color name="depth_three">#94EA30</color>-->
+  <!--<color name="depth_four">#E2FA33</color>-->
+
+</resources>
