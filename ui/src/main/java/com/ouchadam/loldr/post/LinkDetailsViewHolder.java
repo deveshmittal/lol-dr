@@ -24,8 +24,9 @@ final class LinkDetailsViewHolder extends BindableViewHolder<Ui.PostDetails> {
     private final TextView authorSubreddit;
     private final TextView scoreCommentCount;
     private final ImageView thumbnailView;
+    private final Presenter.Listener postClickListener;
 
-    static LinkDetailsViewHolder inflate(ViewGroup parent, LayoutInflater layoutInflater, View.OnClickListener postClickListener) {
+    static LinkDetailsViewHolder inflate(ViewGroup parent, LayoutInflater layoutInflater, Presenter.Listener postClickListener) {
         View root = layoutInflater.inflate(R.layout.view_post_link_details, parent, false);
 
         TextView titleView = (TextView) root.findViewById(R.id.post_details_link_title);
@@ -33,22 +34,30 @@ final class LinkDetailsViewHolder extends BindableViewHolder<Ui.PostDetails> {
         TextView scoreCommentCount = (TextView) root.findViewById(R.id.post_details_link_score_comment_count);
         ImageView thumbnailView = (ImageView) root.findViewById(R.id.post_details_link_thumbnail);
 
-        root.setOnClickListener(postClickListener);
-
-        return new LinkDetailsViewHolder(root, titleView, authorSubreddit, scoreCommentCount, thumbnailView);
+        return new LinkDetailsViewHolder(root, titleView, authorSubreddit, scoreCommentCount, thumbnailView, postClickListener);
     }
 
-    private LinkDetailsViewHolder(View root, TextView titleView, TextView authorSubreddit, TextView scoreCommentCount, ImageView thumbnailView) {
+    private LinkDetailsViewHolder(View root, TextView titleView, TextView authorSubreddit, TextView scoreCommentCount,
+                                  ImageView thumbnailView, Presenter.Listener postClickListener) {
         super(root);
         this.root = root;
         this.titleView = titleView;
         this.authorSubreddit = authorSubreddit;
         this.scoreCommentCount = scoreCommentCount;
         this.thumbnailView = thumbnailView;
+        this.postClickListener = postClickListener;
     }
 
     @Override
-    public void bind(Ui.PostDetails postDetails, int position) {
+    public void bind(final Ui.PostDetails postDetails, int position) {
+
+        root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postClickListener.onPostClicked(postDetails);
+            }
+        });
+
         Ui.PostSummary postSummary = postDetails.getPostSummary();
 
         titleView.setText(postSummary.getTitle());

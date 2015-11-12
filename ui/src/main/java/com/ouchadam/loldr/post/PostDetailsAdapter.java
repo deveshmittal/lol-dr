@@ -13,17 +13,19 @@ class PostDetailsAdapter extends RecyclerView.Adapter<BindableViewHolder<?>> {
     private final ViewHolderFactory viewHolderFactory;
     private final SourceProvider<Ui.Comment, DataSource<Ui.Comment>> commentSource;
     private final SourceProvider<Ui.PostDetails, DataSource<Ui.PostDetails>> postSource;
+    private final Presenter.Listener listener;
 
     PostDetailsAdapter(ViewHolderFactory viewHolderFactory, SourceProvider<Ui.Comment, DataSource<Ui.Comment>> commentSource,
-                       SourceProvider<Ui.PostDetails, DataSource<Ui.PostDetails>> postSource) {
+                       SourceProvider<Ui.PostDetails, DataSource<Ui.PostDetails>> postSource, Presenter.Listener listener) {
         this.viewHolderFactory = viewHolderFactory;
         this.commentSource = commentSource;
         this.postSource = postSource;
+        this.listener = listener;
     }
 
     @Override
     public BindableViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        return viewHolderFactory.create(viewGroup, viewType);
+        return viewHolderFactory.create(viewGroup, viewType, listener);
     }
 
     @Override

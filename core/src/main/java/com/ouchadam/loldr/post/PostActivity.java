@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.novoda.easycustomtabs.EasyCustomTabs;
 import com.ouchadam.loldr.BaseActivity;
 import com.ouchadam.loldr.BuildConfig;
 import com.ouchadam.loldr.Executor;
@@ -49,9 +50,8 @@ public class PostActivity extends BaseActivity {
         this.presenter = Presenter.onCreate(this, new PostDetailsProvider(), new CommentProvider(), new Presenter.Listener() {
             @Override
             public void onPostClicked(Ui.PostDetails post) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(post.getPostSummary().getExternalLink()));
-                startActivity(intent);
+                Ui.PostSummary postSummary = post.getPostSummary();
+                EasyCustomTabs.getInstance().navigateTo(Uri.parse(postSummary.getExternalLink()), PostActivity.this);
             }
 
             @Override

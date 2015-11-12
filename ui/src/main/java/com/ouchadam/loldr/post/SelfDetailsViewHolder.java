@@ -22,8 +22,9 @@ final class SelfDetailsViewHolder extends BindableViewHolder<Ui.PostDetails> {
     private final TextView titleView;
     private final TextView authorSubreddit;
     private final TextView scoreCommentCount;
+    private final Presenter.Listener postClickListener;
 
-    static SelfDetailsViewHolder inflate(ViewGroup parent, LayoutInflater layoutInflater, View.OnClickListener postClickListener) {
+    static SelfDetailsViewHolder inflate(ViewGroup parent, LayoutInflater layoutInflater, Presenter.Listener postClickListener) {
         View root = layoutInflater.inflate(R.layout.view_post_self_details, parent, false);
 
         TextView titleView = (TextView) root.findViewById(R.id.post_details_link_title);
@@ -31,22 +32,28 @@ final class SelfDetailsViewHolder extends BindableViewHolder<Ui.PostDetails> {
         TextView scoreCommentCount = (TextView) root.findViewById(R.id.post_details_link_score_comment_count);
         TextView bodyView = (TextView) root.findViewById(R.id.post_details_body);
 
-        root.setOnClickListener(postClickListener);
-
-        return new SelfDetailsViewHolder(root, bodyView, titleView, authorSubreddit, scoreCommentCount);
+        return new SelfDetailsViewHolder(root, bodyView, titleView, authorSubreddit, scoreCommentCount, postClickListener);
     }
 
-    private SelfDetailsViewHolder(View root, TextView bodyView, TextView titleView, TextView authorSubreddit, TextView scoreCommentCount) {
+    private SelfDetailsViewHolder(View root, TextView bodyView, TextView titleView, TextView authorSubreddit,
+                                  TextView scoreCommentCount, Presenter.Listener postClickListener) {
         super(root);
         this.root = root;
         this.bodyView = bodyView;
         this.titleView = titleView;
         this.authorSubreddit = authorSubreddit;
         this.scoreCommentCount = scoreCommentCount;
+        this.postClickListener = postClickListener;
     }
 
     @Override
-    public void bind(Ui.PostDetails postDetails, int position) {
+    public void bind(final Ui.PostDetails postDetails, int position) {
+        root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postClickListener.onPostClicked(postDetails);
+            }
+        });
         Ui.PostSummary postSummary = postDetails.getPostSummary();
         setAuthAndSubreddit(postSummary);
         setScoreAndCommentCount(postSummary);

@@ -26,33 +26,23 @@ public class ViewHolderFactory {
         this.listener = listener;
     }
 
-    public BindableViewHolder create(ViewGroup viewGroup, int viewType) {
+    public BindableViewHolder create(ViewGroup viewGroup, int viewType, Presenter.Listener listener) {
         switch (viewType) {
             case VIEW_TYPE_COMMENT:
-                return CommentViewHolder.inflateComment(viewGroup, layoutInflater, getPostClickListener());
+                return CommentViewHolder.inflateComment(viewGroup, layoutInflater, listener);
 
             case VIEW_TYPE_MORE:
-                return CommentViewHolder.inflateMore(viewGroup, layoutInflater, getPostClickListener());
+                return CommentViewHolder.inflateMore(viewGroup, layoutInflater, listener);
 
             case VIEW_TYPE_SELF_DETAILS:
-                return SelfDetailsViewHolder.inflate(viewGroup, layoutInflater, getPostClickListener());
+                return SelfDetailsViewHolder.inflate(viewGroup, layoutInflater, listener);
 
             case VIEW_TYPE_LINK_DETAILS:
-                return LinkDetailsViewHolder.inflate(viewGroup, layoutInflater, getPostClickListener());
+                return LinkDetailsViewHolder.inflate(viewGroup, layoutInflater, listener);
 
             default:
                 throw new RuntimeException("dev error");
         }
-    }
-
-    private View.OnClickListener getPostClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                listener.onPostClicked();
-                // TODO
-            }
-        };
     }
 
     public int getItemViewType(int position, DataSource<Ui.PostDetails> postSource, DataSource<Ui.Comment> commentSource) {

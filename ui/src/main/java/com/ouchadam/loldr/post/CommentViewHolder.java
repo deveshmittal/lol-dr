@@ -26,8 +26,9 @@ final class CommentViewHolder extends BindableViewHolder<Ui.Comment> {
     private final TextView authorView;
     private final View indentationView;
     private final View content;
+    private Presenter.Listener postClickListener;
 
-    static CommentViewHolder inflateComment(ViewGroup parent, LayoutInflater layoutInflater, View.OnClickListener postClickListener) {
+    static CommentViewHolder inflateComment(ViewGroup parent, LayoutInflater layoutInflater, Presenter.Listener postClickListener) {
         View view = layoutInflater.inflate(R.layout.view_post_comment, parent, false);
 
         TextView bodyView = (TextView) view.findViewById(R.id.post_comment_body);
@@ -35,38 +36,42 @@ final class CommentViewHolder extends BindableViewHolder<Ui.Comment> {
         View indentationView = view.findViewById(R.id.comment_indentation);
         View content = view.findViewById(R.id.comment_content);
 
-        view.setOnClickListener(postClickListener);
-
-        return new CommentViewHolder(view, bodyView, authorView, indentationView, content);
+        return new CommentViewHolder(view, bodyView, authorView, indentationView, content, postClickListener);
     }
 
-    static CommentViewHolder inflateMore(ViewGroup parent, LayoutInflater layoutInflater, View.OnClickListener postClickListener) {
+    static CommentViewHolder inflateMore(ViewGroup parent, LayoutInflater layoutInflater, Presenter.Listener postClickListener) {
         View view = layoutInflater.inflate(R.layout.view_post_more_comment, parent, false);
 
         TextView bodyView = (TextView) view.findViewById(R.id.post_comment_body);
         View indentationView = view.findViewById(R.id.comment_indentation);
         View content = view.findViewById(R.id.comment_content);
 
-        view.setOnClickListener(postClickListener);
-
-        return new CommentViewHolder(view, bodyView, null, indentationView, content);
+        return new CommentViewHolder(view, bodyView, null, indentationView, content, postClickListener);
     }
 
-    private CommentViewHolder(View itemView, TextView bodyView, TextView authorView, View indentationView, View content) {
+    private CommentViewHolder(View itemView, TextView bodyView, TextView authorView, View indentationView, View content,
+                              Presenter.Listener postClickListener) {
         super(itemView);
         this.rootView = itemView;
         this.bodyView = bodyView;
         this.authorView = authorView;
         this.indentationView = indentationView;
         this.content = content;
+        this.postClickListener = postClickListener;
     }
 
     @Override
-    public void bind(Ui.Comment comment, int position) {
+    public void bind(final Ui.Comment comment, int position) {
         setPosition(position);
         setDepth(comment.getDepth());
 
         if (!comment.isMore()) {
+            rootView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    postClickListener.onCommentClicked(comment);
+                }
+            });
             setBody(comment.getBody());
             setAuthor(comment.getAuthor());
         }
@@ -101,7 +106,6 @@ final class CommentViewHolder extends BindableViewHolder<Ui.Comment> {
 
     private int getColourForDepth(int depth) {
         Resources resources = rootView.getResources();
-
 
         int normalisedDepth = (depth % DEPTH_COLOURS.length);
 

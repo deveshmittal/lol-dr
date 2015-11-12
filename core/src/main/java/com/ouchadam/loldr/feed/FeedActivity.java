@@ -57,8 +57,6 @@ public class FeedActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EasyCustomTabs.initialize(this);
-
         this.subreddit = getSubreddit();
         this.repository = Repository.newInstance(UserTokenProvider.newInstance(this));
         PostProvider postProvider = new PostProvider();
@@ -160,15 +158,4 @@ public class FeedActivity extends BaseActivity {
         }
     };
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        EasyCustomTabs.getInstance().connectTo(this);
-    }
-
-    @Override
-    protected void onPause() {
-        EasyCustomTabs.getInstance().disconnectFrom(this);
-        super.onPause();
-    }
 }
