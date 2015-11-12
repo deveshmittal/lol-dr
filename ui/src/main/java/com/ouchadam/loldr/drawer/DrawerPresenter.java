@@ -28,9 +28,11 @@ public class DrawerPresenter<T extends DataSource<Ui.Subscription>> {
         navigationView.getMenu().clear();
         navigationView.setNavigationItemSelectedListener(onMenuClicked);
 
+        navigationView.getMenu().add("Search");
+
         for (int index = 0; index < dataSource.size(); index++) {
             Ui.Subscription subscription = dataSource.get(index);
-            Intent intent = toIntent(subscription);
+            Intent intent = toFeedIntent(subscription);
             navigationView.getMenu().add(subscription.getName()).setIntent(intent);
         }
     }
@@ -39,12 +41,18 @@ public class DrawerPresenter<T extends DataSource<Ui.Subscription>> {
         @Override
         public boolean onNavigationItemSelected(MenuItem menuItem) {
             Intent intent = menuItem.getIntent();
-            listener.onSubscriptionClicked(fromIntent(intent));
+
+            if (intent != null && intent.hasExtra(EXTRA_NAME)) {
+                listener.onSubscriptionClicked(fromIntent(intent));
+            } else {
+                listener.onSearchClicked();
+            }
+
             return true;
         }
     };
 
-    private Intent toIntent(Ui.Subscription subscription) {
+    private Intent toFeedIntent(Ui.Subscription subscription) {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_ID, subscription.getId());
         intent.putExtra(EXTRA_NAME, subscription.getName());
@@ -66,6 +74,8 @@ public class DrawerPresenter<T extends DataSource<Ui.Subscription>> {
     }
 
     public interface Listener {
+        void onSearchClicked();
+
         void onSubscriptionClicked(Ui.Subscription subscription);
     }
 

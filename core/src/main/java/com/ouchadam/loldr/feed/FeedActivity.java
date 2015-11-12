@@ -19,6 +19,7 @@ import com.ouchadam.loldr.data.Repository;
 import com.ouchadam.loldr.drawer.DrawerPresenter;
 import com.ouchadam.loldr.drawer.SubscriptionProvider;
 import com.ouchadam.loldr.post.PostActivity;
+import com.ouchadam.loldr.search.SearchActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,8 +152,13 @@ public class FeedActivity extends BaseActivity {
 
     private final DrawerPresenter.Listener drawerListener = new DrawerPresenter.Listener() {
         @Override
+        public void onSearchClicked() {
+            startActivity(SearchActivity.createIntent());
+        }
+
+        @Override
         public void onSubscriptionClicked(Ui.Subscription subscription) {
-            startActivity(FeedActivity.create(subscription.getName()));
+            FeedActivity.create(subscription.getName());
         }
     };
 
