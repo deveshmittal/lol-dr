@@ -48,7 +48,8 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
         this.postClickListener = postClickListener;
     }
 
-    public void bind(final Ui.PostSummary postSummary) {
+    public void bind(final Ui.PostSummary postSummary, boolean seen) {
+        rootView.setAlpha(seen ? .5f : 1f);
         setClickListener(postSummary);
         setThumbnailClickListener(postSummary);
         setTitle(postSummary.getTitle());
@@ -74,12 +75,14 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void setThumbnailClickListener(final Ui.PostSummary postSummary) {
-        thumbnailView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                postClickListener.onClickLinkFrom(postSummary);
-            }
-        });
+        thumbnailView.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        postClickListener.onClickLinkFrom(postSummary);
+                    }
+                }
+        );
     }
 
     private void setThumbnail(final String imageUrl) {
@@ -88,7 +91,7 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
             return;
         }
 
-        if (imageUrl == null || imageUrl.isEmpty() ||  "default".equals(imageUrl)) {
+        if (imageUrl == null || imageUrl.isEmpty() || "default".equals(imageUrl)) {
             thumbnailView.setImageResource(R.drawable.ic_link);
         } else {
             Glide.with(thumbnailView.getContext()).load(imageUrl).into(thumbnailView);
@@ -97,12 +100,14 @@ final class PostSummaryViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void setClickListener(final Ui.PostSummary postSummary) {
-        rootView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                postClickListener.onClick(postSummary);
-            }
-        });
+        rootView.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        postClickListener.onClick(postSummary);
+                    }
+                }
+        );
     }
 
     private void setTitle(String title) {

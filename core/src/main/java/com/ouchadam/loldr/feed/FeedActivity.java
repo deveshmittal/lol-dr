@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.widget.Toast;
 
+import com.novoda.easycustomtabs.EasyCustomTabs;
 import com.ouchadam.loldr.BaseActivity;
 import com.ouchadam.loldr.BuildConfig;
 import com.ouchadam.loldr.Executor;
@@ -18,6 +19,7 @@ import com.ouchadam.loldr.data.Repository;
 import com.ouchadam.loldr.drawer.DrawerPresenter;
 import com.ouchadam.loldr.drawer.SubscriptionProvider;
 import com.ouchadam.loldr.post.PostActivity;
+import com.ouchadam.loldr.search.SearchActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,6 @@ public class FeedActivity extends BaseActivity {
     private Toast toast;
 
     private String afterId;
-    private List<Data.Post> cachedPosts = new ArrayList<>();
     private Repository repository;
 
     private String subreddit;
@@ -56,6 +57,8 @@ public class FeedActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EasyCustomTabs.initialize(this);
+
         this.subreddit = getSubreddit();
         this.repository = Repository.newInstance(UserTokenProvider.newInstance(this));
         PostProvider postProvider = new PostProvider();
@@ -97,9 +100,7 @@ public class FeedActivity extends BaseActivity {
 
         @Override
         public void onClickLinkFrom(Ui.PostSummary postSummary) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(postSummary.getExternalLink()));
-            startActivity(intent);
+            EasyCustomTabs.getInstance().navigateTo(Uri.parse(postSummary.getExternalLink()), FeedActivity.this);
         }
 
         @Override
@@ -113,10 +114,7 @@ public class FeedActivity extends BaseActivity {
             @Override
             public void onNext(Data.Feed feed) {
                 FeedActivity.this.afterId = feed.afterId();
-                cachedPosts.addAll(feed.getPosts());               // TODO replace this with a cursor
-
-                List<Ui.PostSummary> summaries = MarshallerFactory.newInstance(getResources()).posts().marshall(cachedPosts);
-
+                List<Ui.PostSummary> summaries = MarshallerFactory.newInstance(getResources()).posts().marshall(feed.getPosts());
                 presenter.present(new PostProvider.PostSummarySource(summaries));
             }
         };
@@ -128,17 +126,19 @@ public class FeedActivity extends BaseActivity {
             public void onNext(Data.Subscriptions subscriptions) {
                 List<Ui.Subscription> uiSubscriptions = new ArrayList<>();
                 for (final Data.Subreddit subreddit : subscriptions.getSubscribedSubreddits()) {
-                    uiSubscriptions.add(new Ui.Subscription() {
-                        @Override
-                        public String getId() {
-                            return subreddit.getId();
-                        }
+                    uiSubscriptions.add(
+                            new Ui.Subscription() {
+                                @Override
+                                public String getId() {
+                                    return subreddit.getId();
+                                }
 
-                        @Override
-                        public String getName() {
-                            return subreddit.getName();
-                        }
-                    });
+                                @Override
+                                public String getName() {
+                                    return subreddit.getName();
+                                }
+                            }
+                    );
                 }
 
                 drawerPresenter.present(new SubscriptionProvider.SubscriptionSource(uiSubscriptions));
@@ -148,9 +148,25 @@ public class FeedActivity extends BaseActivity {
 
     private final DrawerPresenter.Listener drawerListener = new DrawerPresenter.Listener() {
         @Override
+        public void onSearchClicked() {
+            startActivity(SearchActivity.createIntent());
+        }
+
+        @Override
         public void onSubscriptionClicked(Ui.Subscription subscription) {
-            startActivity(FeedActivity.create(subscription.getName()));
+            FeedActivity.create(subscription.getName());
         }
     };
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EasyCustomTabs.getInstance().connectTo(this);
+    }
+
+    @Override
+    protected void onPause() {
+        EasyCustomTabs.getInstance().disconnectFrom(this);
+        super.onPause();
+    }
 }
