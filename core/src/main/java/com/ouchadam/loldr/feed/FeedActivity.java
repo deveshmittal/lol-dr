@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.widget.Toast;
 
+import com.novoda.easycustomtabs.EasyCustomTabs;
 import com.ouchadam.loldr.BaseActivity;
 import com.ouchadam.loldr.BuildConfig;
 import com.ouchadam.loldr.Executor;
@@ -56,6 +57,8 @@ public class FeedActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EasyCustomTabs.initialize(this);
+
         this.subreddit = getSubreddit();
         this.repository = Repository.newInstance(UserTokenProvider.newInstance(this));
         PostProvider postProvider = new PostProvider();
@@ -97,9 +100,7 @@ public class FeedActivity extends BaseActivity {
 
         @Override
         public void onClickLinkFrom(Ui.PostSummary postSummary) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(postSummary.getExternalLink()));
-            startActivity(intent);
+            EasyCustomTabs.getInstance().navigateTo(Uri.parse(postSummary.getExternalLink()), FeedActivity.this);
         }
 
         @Override
@@ -128,17 +129,19 @@ public class FeedActivity extends BaseActivity {
             public void onNext(Data.Subscriptions subscriptions) {
                 List<Ui.Subscription> uiSubscriptions = new ArrayList<>();
                 for (final Data.Subreddit subreddit : subscriptions.getSubscribedSubreddits()) {
-                    uiSubscriptions.add(new Ui.Subscription() {
-                        @Override
-                        public String getId() {
-                            return subreddit.getId();
-                        }
+                    uiSubscriptions.add(
+                            new Ui.Subscription() {
+                                @Override
+                                public String getId() {
+                                    return subreddit.getId();
+                                }
 
-                        @Override
-                        public String getName() {
-                            return subreddit.getName();
-                        }
-                    });
+                                @Override
+                                public String getName() {
+                                    return subreddit.getName();
+                                }
+                            }
+                    );
                 }
 
                 drawerPresenter.present(new SubscriptionProvider.SubscriptionSource(uiSubscriptions));
@@ -153,4 +156,15 @@ public class FeedActivity extends BaseActivity {
         }
     };
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EasyCustomTabs.getInstance().connectTo(this);
+    }
+
+    @Override
+    protected void onPause() {
+        EasyCustomTabs.getInstance().disconnectFrom(this);
+        super.onPause();
+    }
 }
