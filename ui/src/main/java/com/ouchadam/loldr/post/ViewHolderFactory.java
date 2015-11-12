@@ -1,7 +1,6 @@
 package com.ouchadam.loldr.post;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.ouchadam.loldr.BindableViewHolder;
@@ -19,11 +18,9 @@ public class ViewHolderFactory {
     private static final int DETAILS_POSITION = 0;
 
     private final LayoutInflater layoutInflater;
-    private final Presenter.Listener listener;
 
-    public ViewHolderFactory(LayoutInflater layoutInflater, Presenter.Listener listener) {
+    public ViewHolderFactory(LayoutInflater layoutInflater) {
         this.layoutInflater = layoutInflater;
-        this.listener = listener;
     }
 
     public BindableViewHolder create(ViewGroup viewGroup, int viewType, Presenter.Listener listener) {

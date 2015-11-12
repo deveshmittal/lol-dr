@@ -1,5 +1,6 @@
 package com.ouchadam.loldr.feed;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,12 +15,12 @@ final class Presenter<T extends DataSource<Ui.PostSummary>> {
 
     private final PostSummaryAdapter<T> adapter;
     private final TextView titleView;
+    private final SwipeRefreshLayout swipeLayout;
 
     static <T extends DataSource<Ui.PostSummary>> Presenter<T> onCreate(
             AppCompatActivity activity,
             SourceProvider<Ui.PostSummary, T> dataSource,
-            String subreddit,
-            Listener listener) {
+            Listener listener, OnRefreshListener onRefreshListener) {
 
         activity.setContentView(R.layout.activity_feed);
         TextView titleView = (TextView) activity.findViewById(R.id.toolbar_title);
@@ -32,12 +33,17 @@ final class Presenter<T extends DataSource<Ui.PostSummary>> {
 
         recyclerView.addOnScrollListener(new PagingScrollListener(listener));
 
-        return new Presenter<>(adapter, titleView);
+        SwipeRefreshLayout swipeLayout = (SwipeRefreshLayout) activity.findViewById(R.id.swipe_container);
+        swipeLayout.setColorSchemeResources(R.color.primary);
+        swipeLayout.setOnRefreshListener(onRefreshListener);
+
+        return new Presenter<>(adapter, titleView, swipeLayout);
     }
 
-    private Presenter(PostSummaryAdapter<T> adapter, TextView titleView) {
+    private Presenter(PostSummaryAdapter<T> adapter, TextView titleView, SwipeRefreshLayout swipeLayout) {
         this.adapter = adapter;
         this.titleView = titleView;
+        this.swipeLayout = swipeLayout;
     }
 
     public void present(T dataSource) {
@@ -50,6 +56,10 @@ final class Presenter<T extends DataSource<Ui.PostSummary>> {
 
     public void markSeen(Ui.PostSummary postSummary) {
         adapter.markSeen(postSummary);
+    }
+
+    public void setLoadingFinished() {
+        swipeLayout.setRefreshing(false);
     }
 
     public interface Listener extends PagingListener {
@@ -90,6 +100,10 @@ final class Presenter<T extends DataSource<Ui.PostSummary>> {
     }
 
     interface PostSourceProvider<T extends DataSource<Ui.PostSummary>> extends SourceProvider<Ui.PostSummary, T> {
+
+    }
+
+    interface OnRefreshListener extends SwipeRefreshLayout.OnRefreshListener {
 
     }
 

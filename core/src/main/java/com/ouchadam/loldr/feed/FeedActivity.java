@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.Toast;
 
 import com.novoda.easycustomtabs.EasyCustomTabs;
@@ -60,18 +61,28 @@ public class FeedActivity extends BaseActivity {
         this.subreddit = getSubreddit();
         this.repository = Repository.newInstance(UserTokenProvider.newInstance(this));
         PostProvider postProvider = new PostProvider();
-        this.presenter = Presenter.onCreate(this, postProvider, subreddit, listener);
+        this.presenter = Presenter.onCreate(this, postProvider, listener, onRefreshListener);
         presenter.setTitle(subreddit);
         this.drawerPresenter = new DrawerPresenter<>((NavigationView) findViewById(R.id.navigation_view), drawerListener, new SubscriptionProvider());
-
         executor.execute(repository.subreddit(subreddit), presentResult());
 
-        if (UserTokenProvider.PreferenceUserProvider.newInstance(this).provideCurrentUser() == null) {
+        if (isSignedOut()) {
             executor.execute(repository.defaultSubscriptions(), updateDrawer());
         } else {
             executor.execute(repository.userSubscriptions(), updateDrawer());
         }
     }
+
+    private boolean isSignedOut() {
+        return UserTokenProvider.PreferenceUserProvider.newInstance(this).provideCurrentUser() == null;
+    }
+
+    private final Presenter.OnRefreshListener onRefreshListener = new Presenter.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            executor.execute(repository.subreddit(subreddit), presentResult());
+        }
+    };
 
     private String getSubreddit() {
         return getIntent().hasExtra(EXTRA_SUBREDDIT) ? getIntent().getStringExtra(EXTRA_SUBREDDIT) : DEFAULT_SUBREDDIT;
@@ -113,6 +124,7 @@ public class FeedActivity extends BaseActivity {
         return new LogSubscriber<Data.Feed>() {
             @Override
             public void onNext(Data.Feed feed) {
+                presenter.setLoadingFinished();
                 FeedActivity.this.afterId = feed.afterId();
                 List<Ui.PostSummary> summaries = MarshallerFactory.newInstance(getResources()).posts().marshall(feed.getPosts());
                 presenter.present(new PostProvider.PostSummarySource(summaries));
