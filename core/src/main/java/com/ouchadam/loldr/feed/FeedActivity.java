@@ -39,7 +39,6 @@ public class FeedActivity extends BaseActivity {
     private Toast toast;
 
     private String afterId;
-    private List<Data.Post> cachedPosts = new ArrayList<>();
     private Repository repository;
 
     private String subreddit;
@@ -115,10 +114,7 @@ public class FeedActivity extends BaseActivity {
             @Override
             public void onNext(Data.Feed feed) {
                 FeedActivity.this.afterId = feed.afterId();
-                cachedPosts.addAll(feed.getPosts());               // TODO replace this with a cursor
-
-                List<Ui.PostSummary> summaries = MarshallerFactory.newInstance(getResources()).posts().marshall(cachedPosts);
-
+                List<Ui.PostSummary> summaries = MarshallerFactory.newInstance(getResources()).posts().marshall(feed.getPosts());
                 presenter.present(new PostProvider.PostSummarySource(summaries));
             }
         };

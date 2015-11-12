@@ -41,11 +41,11 @@ public class Repository {
     }
 
     public Observable<Data.Feed> subreddit(String subredditName) {
-        return api.getSubreddit(subredditName, 100);
+        return api.getSubreddit(subredditName, 10);
     }
 
     public Observable<Data.Feed> subreddit(String subredditName, String afterId) {
-        return api.getSubreddit(subredditName, 100, afterId);
+        return api.getSubreddit(subredditName, 10, afterId);
     }
 
     public Observable<Data.PostDetails> postDetails(String subredditName, String postId) {
