@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:textSize="12dp"
         android:fontFamily="sans-serif-light"
-        android:textColor="#4a90e2"
+        android:textColor="@color/primary"
         android:paddingBottom="3dp" />
 
       <TextView

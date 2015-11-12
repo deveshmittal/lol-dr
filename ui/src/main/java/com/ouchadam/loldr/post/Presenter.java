@@ -29,7 +29,7 @@ public class Presenter {
         });
 
         LayoutInflater layoutInflater = activity.getLayoutInflater();
-        PostDetailsAdapter adapter = new PostDetailsAdapter(new ViewHolderFactory(layoutInflater), commentProvider, p);
+        PostDetailsAdapter adapter = new PostDetailsAdapter(new ViewHolderFactory(layoutInflater, listener), commentProvider, p);
 
         RecyclerView recyclerView = (RecyclerView) activity.findViewById(R.id.comment_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
@@ -56,6 +56,8 @@ public class Presenter {
     }
 
     public interface Listener {
+        void onPostClicked(Ui.PostDetails post);
+
         void onCommentClicked(Ui.Comment comment);
 
         void onTitleClicked();

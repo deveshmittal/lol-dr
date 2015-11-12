@@ -14,6 +14,13 @@ final class CommentViewHolder extends BindableViewHolder<Ui.Comment> {
 
     public static final int POSITION_KEY = R.id.tag_feed_position;
 
+    private static final int DEPTH_COLOURS[] = {
+            R.color.depth_one,
+            R.color.depth_two,
+            R.color.depth_three,
+            R.color.depth_four
+    };
+
     private final View rootView;
     private final TextView bodyView;
     private final TextView authorView;
@@ -91,8 +98,6 @@ final class CommentViewHolder extends BindableViewHolder<Ui.Comment> {
             content.setPadding(0, content.getPaddingTop(), content.getPaddingRight(), content.getPaddingBottom());
         }
     }
-
-    private static final int DEPTH_COLOURS[] = {android.R.color.black, android.R.color.holo_blue_bright, android.R.color.holo_orange_dark};
 
     private int getColourForDepth(int depth) {
         Resources resources = rootView.getResources();

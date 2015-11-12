@@ -50,4 +50,5 @@ class PostDetailsAdapter extends RecyclerView.Adapter<BindableViewHolder<?>> {
         this.postSource.swap(dataSource);
         notifyDataSetChanged();
     }
+
 }

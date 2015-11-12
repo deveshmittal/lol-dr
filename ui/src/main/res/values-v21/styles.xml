@@ -2,14 +2,15 @@
 
   <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
 
-    <item name="android:colorPrimary">#9C27B0</item>
+    <item name="android:colorPrimary">@color/primary</item>
     <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-    <item name="android:statusBarColor">#8E24AA</item>
+    <item name="android:statusBarColor">@color/secondary</item>
     <item name="android:windowContentTransitions">true</item>
     <item name="android:windowAllowEnterTransitionOverlap">true</item>
     <item name="android:windowAllowReturnTransitionOverlap">true</item>
     <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
     <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+    <item name="android:windowBackground">@android:color/white</item>
 
   </style>
 

@@ -1,6 +1,7 @@
 package com.ouchadam.loldr.post;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.ouchadam.loldr.BaseActivity;
@@ -46,6 +47,13 @@ public class PostActivity extends BaseActivity {
         Repository repository = Repository.newInstance(UserTokenProvider.newInstance(this));
 
         this.presenter = Presenter.onCreate(this, new PostDetailsProvider(), new CommentProvider(), new Presenter.Listener() {
+            @Override
+            public void onPostClicked(Ui.PostDetails post) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(post.getPostSummary().getExternalLink()));
+                startActivity(intent);
+            }
+
             @Override
             public void onCommentClicked(Ui.Comment comment) {
             }

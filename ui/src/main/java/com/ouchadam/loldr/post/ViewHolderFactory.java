@@ -19,9 +19,11 @@ public class ViewHolderFactory {
     private static final int DETAILS_POSITION = 0;
 
     private final LayoutInflater layoutInflater;
+    private final Presenter.Listener listener;
 
-    public ViewHolderFactory(LayoutInflater layoutInflater) {
+    public ViewHolderFactory(LayoutInflater layoutInflater, Presenter.Listener listener) {
         this.layoutInflater = layoutInflater;
+        this.listener = listener;
     }
 
     public BindableViewHolder create(ViewGroup viewGroup, int viewType) {
@@ -47,6 +49,7 @@ public class ViewHolderFactory {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                listener.onPostClicked();
                 // TODO
             }
         };

@@ -10,7 +10,7 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:minHeight="?attr/actionBarSize"
-    android:background="#9C27B0">
+    android:background="@color/primary">
 
     <TextView
       style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
